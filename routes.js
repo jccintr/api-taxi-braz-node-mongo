@@ -11,6 +11,7 @@ router.post("/login",AuthController.login);
 
 router.post("/driver/register",DriverController.store);
 router.post("/driver/login",DriverController.login);
+router.post("/driver/token",AuthDriver,DriverController.validateToken);
 router.post("/driver/location",AuthDriver,DriverController.updateLocation);
 router.get("/driver/location",DriverController.getLocation);
 

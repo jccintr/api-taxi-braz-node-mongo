@@ -86,3 +86,13 @@ export const getLocation =  async (req,res) => {
 
 }
 
+export const validateToken  = async (req,res) => {
+
+    const {driverId} = req.body;
+   
+
+   const driver = await Driver.findById(driverId).select('name carro placa');
+
+   return res.status(200).json(driver);
+}
+
