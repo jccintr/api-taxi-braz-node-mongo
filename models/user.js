@@ -33,11 +33,13 @@ const userSchema = new mongoose.Schema({
         required:false,
         default: null
      },
-     role:{
-        type:Number,
-        required:true,
-        default: 1
+     pushToken:{
+        type:String,
+        required:false,
+        default: null
      },
+    
+    
    
 },{timestamps: true});
 
