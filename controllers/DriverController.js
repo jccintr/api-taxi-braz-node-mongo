@@ -60,7 +60,7 @@ if(!bcryptjs.compareSync(password,driver.password)){
     return res.status(200).json({token: token});
 }
 
-export const setLocation =  async (req,res) => {
+export const updateLocation =  async (req,res) => {
 
    
     const {driverId,latitude,longitude} = req.body;
@@ -73,6 +73,16 @@ export const setLocation =  async (req,res) => {
   } else {
       return res.status(200).json({message:"Location updated"});
   }
+
+}
+
+export const getLocation =  async (req,res) => {
+
+    const drivers = await Driver.find().select('name carro placa latitude longitude');
+
+
+    return res.status(200).json(drivers);
+
 
 }
 
