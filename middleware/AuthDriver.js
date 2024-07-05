@@ -1,7 +1,7 @@
-const jsonwebtoken = require('jsonwebtoken');
+import jsonwebtoken from 'jsonwebtoken';
 
 
- const Auth = (req, res, next) => {
+ const AuthDriver = (req, res, next) => {
   
       const bearer = req.headers['authorization'];
       
@@ -17,7 +17,7 @@ const jsonwebtoken = require('jsonwebtoken');
       } catch (error) {
       return res.status(403).json({error:"Não autorizado"});
       }
-    req.body.userId = decoded.userId;
+    req.body.driverId = decoded.driverId;
 
     next();
 
@@ -25,4 +25,4 @@ const jsonwebtoken = require('jsonwebtoken');
  
 };
 
-module.exports = Auth;
+export default AuthDriver;

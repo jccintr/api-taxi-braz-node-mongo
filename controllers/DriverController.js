@@ -60,3 +60,19 @@ if(!bcryptjs.compareSync(password,driver.password)){
     return res.status(200).json({token: token});
 }
 
+export const setLocation =  async (req,res) => {
+
+   
+    const {driverId,latitude,longitude} = req.body;
+ 
+
+  const updatedLocation = await Driver.findByIdAndUpdate(driverId,{latitude,longitude,isAvailable:true});
+       
+  if(!updatedLocation){
+      return res.status(404).json({message: "Driver não encontrado"});
+  } else {
+      return res.status(200).json({message:"Location updated"});
+  }
+
+}
+
