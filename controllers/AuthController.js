@@ -11,7 +11,7 @@ import User from '../models/user.js';
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('name password');
 
     if(!user){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -22,11 +22,15 @@ import User from '../models/user.js';
         }
 
         const token = jsonwebtoken.sign({userId: user._id},process.env.JWT_SECRET);
-        return res.status(200).json({token: token});
+       
+
+        const { password:p, ...rest } = user._doc;
+        const ret = {...rest,token};
+        return res.status(200).json(ret);
     }
 
 
-    export const register = async (req,res) => {
+    export const store = async (req,res) => {
    
       const {name,email,password,telefone} = req.body;
 
@@ -56,6 +60,16 @@ import User from '../models/user.js';
         return res.status(201).json(rest);
        
 
+    }
+
+    export const validateToken  = async (req,res) => {
+
+        const {userId} = req.body;
+       
+    
+       const user = await User.findById(userId).select('name');
+    
+       return res.status(200).json(user);
     }
 
 
