@@ -40,13 +40,13 @@ export const store = async (req,res) => {
 
     const {email,password} = req.body;
 
-    console.log(req.body);
+    
 
     if(!email || !password || email == '' || password == ''){
         return res.status(400).json({error: 'Campos obrigatórios não informados.'});
     }
 
-    const driver = await Driver.findOne({ email });
+    const driver = await Driver.findOne({ email }).select('name carro placa password');
 
 if(!driver){
     return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -57,7 +57,10 @@ if(!bcryptjs.compareSync(password,driver.password)){
     }
 
     const token = jsonwebtoken.sign({driverId: driver._id},process.env.JWT_SECRET);
-    return res.status(200).json({token: token});
+   
+    const { password:p, ...rest } = driver._doc;
+    const ret = {...rest,token};
+    return res.status(200).json(ret);
 }
 
 export const updateLocation =  async (req,res) => {

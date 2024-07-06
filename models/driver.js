@@ -61,6 +61,11 @@ const driverSchema = new mongoose.Schema({
       required:false,
       default: null
    },
+   ativo:{
+      type:Boolean,
+      required: false,
+      default: true
+   }
      
    
 },{timestamps: true});
