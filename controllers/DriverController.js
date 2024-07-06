@@ -5,11 +5,11 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export const store = async (req,res) => {
    
-    const {name,email,password,telefone,carro,placa} = req.body;
+    const {name,email,password,telefone,carro,placa,doc} = req.body;
 
       console.log(req.body);
 
-      if(!name || !email || !password || !telefone || !carro || !placa || name=='' || email == '' || password == '' || telefone =='' || placa =='' || carro ==''){
+      if(!name || !email || !password || !telefone || !carro || !placa || !doc || name=='' || email == '' || password == '' || telefone =='' || placa =='' || carro =='' || doc ==''){
           return res.status(400).json({error: 'Campos obrigatórios não informados.'});
       }
 
@@ -27,7 +27,7 @@ export const store = async (req,res) => {
 
       const salt = bcryptjs.genSaltSync(10);
       const password_hash = bcryptjs.hashSync(password,salt);
-      const newDriver = new Driver({name,email,password:password_hash,telefone,carro,placa});
+      const newDriver = new Driver({name,email,password:password_hash,telefone,carro,placa,doc});
       await newDriver.save();
       const { password:p, ...rest } = newDriver._doc;
       return res.status(201).json(rest);

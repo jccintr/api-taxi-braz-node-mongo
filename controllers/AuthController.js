@@ -32,11 +32,11 @@ import User from '../models/user.js';
 
     export const store = async (req,res) => {
    
-      const {name,email,password,telefone} = req.body;
+      const {name,email,password,telefone,doc} = req.body;
 
         console.log(req.body);
 
-        if(!name || !email || !password || !telefone|| name=='' || email == '' || password == '' || telefone ==''){
+        if(!name || !email || !password || !telefone || !doc || name=='' || email == '' || password == '' || telefone =='' || doc ==''){
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
@@ -54,7 +54,7 @@ import User from '../models/user.js';
 
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
-        const newUser = new User({name,email,password:password_hash,telefone});
+        const newUser = new User({name,email,password:password_hash,telefone,doc});
         await newUser.save();
         const { password:p, ...rest } = newUser._doc;
         return res.status(201).json(rest);
