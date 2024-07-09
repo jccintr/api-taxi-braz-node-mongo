@@ -11,7 +11,7 @@ import User from '../models/user.js';
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const user = await User.findOne({ email }).select('name password');
+        const user = await User.findOne({ email }).select('name password isAvailable');
 
     if(!user){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
