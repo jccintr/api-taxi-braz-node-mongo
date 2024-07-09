@@ -17,6 +17,7 @@ router.post("/driver/login",DriverController.login);
 router.post("/driver/token",AuthDriver,DriverController.validateToken);
 router.post("/driver/location",AuthDriver,DriverController.updateLocation);
 router.get("/driver/location",DriverController.getLocation);
+router.post("/driver/status",AuthDriver,DriverController.setStatus);
 
 
 export default router;
