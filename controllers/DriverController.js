@@ -46,7 +46,7 @@ export const store = async (req,res) => {
         return res.status(400).json({error: 'Campos obrigatórios não informados.'});
     }
 
-    const driver = await Driver.findOne({ email }).select('name carro placa password');
+    const driver = await Driver.findOne({ email }).select('name carro placa password isAvailable');
 
 if(!driver){
     return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -108,7 +108,7 @@ export const validateToken  = async (req,res) => {
     const {driverId} = req.body;
    
 
-   const driver = await Driver.findById(driverId).select('name carro placa');
+   const driver = await Driver.findById(driverId).select('name carro placa isAvailable');
 
    return res.status(200).json(driver);
 }
