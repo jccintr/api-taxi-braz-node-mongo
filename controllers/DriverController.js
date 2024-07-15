@@ -5,11 +5,11 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export const store = async (req,res) => {
    
-    const {name,email,password,telefone,carro,placa,doc} = req.body;
+    const {name,email,password,telefone,doc,veiculo} = req.body;
 
       console.log(req.body);
 
-      if(!name || !email || !password || !telefone || !carro || !placa || !doc || name=='' || email == '' || password == '' || telefone =='' || placa =='' || carro =='' || doc ==''){
+      if(!name || !email || !password || !telefone  || !doc || name=='' || email == '' || password == '' || telefone =='' || doc ==''){
           return res.status(400).json({error: 'Campos obrigatórios não informados.'});
       }
 
@@ -27,7 +27,7 @@ export const store = async (req,res) => {
 
       const salt = bcryptjs.genSaltSync(10);
       const password_hash = bcryptjs.hashSync(password,salt);
-      const newDriver = new Driver({name,email,password:password_hash,telefone,carro,placa,doc});
+      const newDriver = new Driver({name,email,password:password_hash,telefone,doc,veiculo});
       await newDriver.save();
       const { password:p, ...rest } = newDriver._doc;
       return res.status(201).json(rest);
@@ -46,7 +46,7 @@ export const store = async (req,res) => {
         return res.status(400).json({error: 'Campos obrigatórios não informados.'});
     }
 
-    const driver = await Driver.findOne({ email }).select('name carro placa password isAvailable');
+    const driver = await Driver.findOne({ email }).select('name veiculo password online');
 
 if(!driver){
     return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -65,9 +65,9 @@ if(!bcryptjs.compareSync(password,driver.password)){
 
 export const setStatus =  async (req,res) => {
 
-    const {driverId,isAvailable} = req.body;
+    const {driverId,online} = req.body;
 
-    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{isAvailable});
+    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{online});
        
     if(!updatedDriver){
         return res.status(404).json({message: "Driver não encontrado"});
@@ -80,10 +80,10 @@ export const setStatus =  async (req,res) => {
 export const updateLocation =  async (req,res) => {
 
    
-    const {driverId,latitude,longitude} = req.body;
+    const {driverId,position} = req.body;
  
 
-  const updatedLocation = await Driver.findByIdAndUpdate(driverId,{latitude,longitude,isAvailable:true});
+  const updatedLocation = await Driver.findByIdAndUpdate(driverId,{position,online:true});
        
   if(!updatedLocation){
       return res.status(404).json({message: "Driver não encontrado"});
@@ -95,7 +95,7 @@ export const updateLocation =  async (req,res) => {
 
 export const getLocation =  async (req,res) => {
 
-    const drivers = await Driver.find({isAvailable:true}).select('name carro placa latitude longitude');
+    const drivers = await Driver.find({online:true}).select('name telefone veiculo position');
 
 
     return res.status(200).json(drivers);
@@ -108,7 +108,11 @@ export const validateToken  = async (req,res) => {
     const {driverId} = req.body;
    
 
-   const driver = await Driver.findById(driverId).select('name carro placa isAvailable');
+   const driver = await Driver.findById(driverId).select('name veiculo online');
+
+   if (!driver) {
+    return res.status(404).json({error: 'Usuário não encontrado.'});
+  }
 
    return res.status(200).json(driver);
 }

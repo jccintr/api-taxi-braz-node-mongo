@@ -16,11 +16,7 @@ const driverSchema = new mongoose.Schema({
       type:String,
       required:true
   },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  telefone:{
+ telefone:{
      type:String,
      required:true
   },
@@ -34,28 +30,13 @@ const driverSchema = new mongoose.Schema({
       required:false,
       default: null
    },
-    isAvailable: {
-      type: Boolean,
-      default: false,
-    },
-    latitude:{
-        type:Number,
-        required:false,
-        default:0
-     },
-     longitude:{
-        type:Number,
-        required:false,
-        default:0
-     },
-     carro:{
-        type:String,
-        required: true,
-     },
-     placa:{
-      type:String,
-      required: true,
+   online:{
+      type:Boolean,
+      required:false,
+      default:false
    },
+   position:{latitude:Number,longitude:Number},
+   veiculo:{tipo:String,modelo:String,cor:String,placa:String},
    pushToken:{
       type:String,
       required:false,
