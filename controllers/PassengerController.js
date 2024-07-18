@@ -81,13 +81,11 @@ import Passenger from '../models/passenger.js';
 
         const {passengerId,name,telefone,avatar} = req.body;
 
-        if(!name || !telefone || !avatar || name=='' || telefone =='' || avatar ==''){
+        if(!name || !telefone ||  name=='' || telefone ==''){
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
-       
-    
-       const updatedPassenger = await Passenger.findByIdAndUpdate(passengerId,{name,telefone,avatar},{new:true}).select('name email telefone avatar doc');
-    
+
+      const updatedPassenger = await Passenger.findByIdAndUpdate(passengerId,{name,telefone,avatar},{new:true}).select('name email telefone avatar doc');
        if (!updatedPassenger) {
          return res.status(404).json({error: 'Usuário não encontrado.'});
        }
