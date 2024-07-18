@@ -14,6 +14,7 @@ const router = Router();
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/auth/login",PassengerController.login);
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
+router.post("/passengers/update",AuthPassenger,PassengerController.update);
 // Driver routes
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);
@@ -22,6 +23,6 @@ router.post("/drivers/location",AuthDriver,DriverController.updateLocation);
 router.get("/drivers/location",DriverController.getLocation);
 router.post("/driver/status",AuthDriver,DriverController.setStatus);
 // Ride routes
-router.post("/ride",AuthPassenger,RideController.store);
+router.post("/rides",AuthPassenger,RideController.store);
 
 export default router;

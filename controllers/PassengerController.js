@@ -11,7 +11,7 @@ import Passenger from '../models/passenger.js';
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const passenger = await Passenger.findOne({ email }).select('name email telefone password');
+        const passenger = await Passenger.findOne({ email }).select('name email telefone password avatar doc');
 
     if(!passenger){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -67,7 +67,7 @@ import Passenger from '../models/passenger.js';
         const {passengerId} = req.body;
        
     
-       const passenger = await Passenger.findById(passengerId).select('name email telefone');
+       const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc');
     
        if (!passenger) {
          return res.status(404).json({error: 'Usuário não encontrado.'});
@@ -77,3 +77,20 @@ import Passenger from '../models/passenger.js';
     }
 
 
+    export const update  = async (req,res) => {
+
+        const {passengerId,name,telefone,avatar} = req.body;
+
+        if(!name || !telefone || !avatar || name=='' || telefone =='' || avatar ==''){
+            return res.status(400).json({error: 'Campos obrigatórios não informados.'});
+        }
+       
+    
+       const updatedPassenger = await Passenger.findByIdAndUpdate(passengerId,{name,telefone,avatar},{new:true}).select('name email telefone avatar doc');
+    
+       if (!updatedPassenger) {
+         return res.status(404).json({error: 'Usuário não encontrado.'});
+       }
+
+       return res.status(200).json(updatedPassenger);
+    }

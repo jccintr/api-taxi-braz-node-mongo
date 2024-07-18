@@ -67,7 +67,7 @@ export const setStatus =  async (req,res) => {
 
     const {driverId,online} = req.body;
 
-    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{online});
+    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{online},{new:true});
        
     if(!updatedDriver){
         return res.status(404).json({message: "Driver não encontrado"});

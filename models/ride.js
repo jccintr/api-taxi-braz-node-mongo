@@ -7,13 +7,14 @@ const rideSchema = new mongoose.Schema({
         type:Date,
         default:Date.now
     },
-    passageiro:{
+    passenger:{
         type: mongoose.Types.ObjectId,
-        ref: "User",
+        ref: "Passenger",
         required:true
     },
-    driverId:{
+    driver:{
         type: mongoose.Types.ObjectId,
+        ref: "Driver",
         default:null
     },
     origem:{latitude:Number,longitude:Number,address:String},
@@ -30,11 +31,21 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    status:{
+        type:Number,
+        default:0
+    },
+    events:[
+        {
+        data:{
+           type:Date,          
+        },
+        descricao:{
+            type:String,          
+        }       
+    }
+]
    
-   
-    
-    
-    
    
 },{timestamps: true});
 
