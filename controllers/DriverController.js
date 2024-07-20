@@ -5,7 +5,7 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export const store = async (req,res) => {
    
-    const {name,email,password,telefone,doc,veiculo} = req.body;
+    const {name,email,password,telefone,doc,veiculo,pix} = req.body;
 
       console.log(req.body);
 
@@ -27,7 +27,7 @@ export const store = async (req,res) => {
 
       const salt = bcryptjs.genSaltSync(10);
       const password_hash = bcryptjs.hashSync(password,salt);
-      const newDriver = new Driver({name,email,password:password_hash,telefone,doc,veiculo});
+      const newDriver = new Driver({name,email,password:password_hash,telefone,doc,veiculo,pix});
       await newDriver.save();
       const { password:p, ...rest } = newDriver._doc;
       return res.status(201).json(rest);
