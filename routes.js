@@ -5,7 +5,7 @@ import * as DriverController from "./controllers/DriverController.js";
 import * as RideController from "./controllers/RideController.js";
 import AuthPassenger from './middleware/AuthPassenger.js';
 import AuthDriver from './middleware/AuthDriver.js';
-//import Auth from './middleware/Auth.js';
+
 
 
 const router = Router();
@@ -21,7 +21,7 @@ router.post("/drivers/auth/login",DriverController.login);
 router.post("/drivers/auth/token",AuthDriver,DriverController.validateToken);
 router.post("/drivers/location",AuthDriver,DriverController.updateLocation);
 router.get("/drivers/location",DriverController.getLocation);
-router.post("/driver/status",AuthDriver,DriverController.setStatus);
+router.post("/drivers/status",AuthDriver,DriverController.setStatus);
 // Ride routes
 router.post("/rides",AuthPassenger,RideController.store);
 
