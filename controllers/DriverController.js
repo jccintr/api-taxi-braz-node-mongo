@@ -117,3 +117,17 @@ export const validateToken  = async (req,res) => {
    return res.status(200).json(driver);
 }
 
+export const storePushtoken =  async (req,res) => {
+
+    const {driverId,pushToken} = req.body;
+
+
+    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{pushToken},{new:true});
+    
+    if(!updatedDriver){
+        return res.status(404).json({mensagem: 'Falha ao atualizar push token.'});
+    }
+    return res.status(200).json({mensagem: 'Push Token Atualizado'});
+ 
+}
+
