@@ -117,7 +117,7 @@ export const validateToken  = async (req,res) => {
    return res.status(200).json(driver);
 }
 
-export const storePushtoken =  async (req,res) => {
+export const storePushToken =  async (req,res) => {
 
     const {driverId,pushToken} = req.body;
 
