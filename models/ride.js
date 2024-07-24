@@ -31,6 +31,10 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    pagamento:{
+        type:String,
+        required:true
+    },
     status:{
         type:Number,
         default:0
