@@ -18,6 +18,7 @@ export const store = async (req,res) => {
     const toDrivers = [];
     drivers.forEach((driver)=>toDrivers.push(driver.pushToken));
 
+    console.log(toDrivers);
     const sound = 'default';
     const title = 'Nova Corrida Solicitada';
     const body = 'Um passageiro acabou de solicitar uma nova corrida.'
@@ -27,7 +28,7 @@ export const store = async (req,res) => {
             Accept: 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({to,sound,title,body});
+        body: JSON.stringify({to:toDrivers,sound,title,body})
     });
 
    
