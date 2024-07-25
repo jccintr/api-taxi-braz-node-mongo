@@ -46,7 +46,7 @@ export const store = async (req,res) => {
         return res.status(400).json({error: 'Campos obrigatórios não informados.'});
     }
 
-    const driver = await Driver.findOne({ email }).select('name veiculo password online');
+    const driver = await Driver.findOne({ email }).select('name email telefone avatar veiculo online password');
 
 if(!driver){
     return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -108,7 +108,7 @@ export const validateToken  = async (req,res) => {
     const {driverId} = req.body;
    
 
-   const driver = await Driver.findById(driverId).select('name veiculo online');
+   const driver = await Driver.findById(driverId).select('name email telefone avatar veiculo online');
 
    if (!driver) {
     return res.status(404).json({error: 'Usuário não encontrado.'});
