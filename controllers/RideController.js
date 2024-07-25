@@ -1,5 +1,6 @@
 import Ride from '../models/ride.js';
 import Driver from '../models/driver.js';
+import Passenger from '../models/passenger.js';
 
 
 
@@ -13,15 +14,16 @@ export const store = async (req,res) => {
     newRide.events.push({data: new Date(),descricao: "Corrida solicitada"});
     await newRide.save();
 
+    const passenger = await Passenger.findById(passengerId).select('name'); 
     const drivers = await Driver.find({online:true}).select('pushToken');
     
     const toDrivers = [];
     drivers.forEach((driver)=>toDrivers.push(driver.pushToken));
 
-    console.log(toDrivers);
+   
     const sound = 'default';
-    const title = 'Nova Corrida Solicitada';
-    const body = 'Um passageiro acabou de solicitar uma nova corrida.'
+    const title = 'Nova Corrida';
+    const body = `${passenger.name} solicita uma corrida de ${origem.address}, para ${destino.address}, no valor de R$ ${valor.toFixed(2)}.`;
     const response = await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
         headers: {
