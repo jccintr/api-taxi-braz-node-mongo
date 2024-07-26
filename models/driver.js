@@ -36,7 +36,7 @@ const driverSchema = new mongoose.Schema({
       default:false
    },
    position:{latitude:Number,longitude:Number},
-   veiculo:{tipo:String,modelo:String,cor:String,placa:String},
+   veiculo:{modelo:String,cor:String,placa:String},
    pix:{favorecido:String,chave:String},
    pushToken:{
       type:String,

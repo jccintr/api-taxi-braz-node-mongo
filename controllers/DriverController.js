@@ -147,3 +147,41 @@ export const update  = async (req,res) => {
    return res.status(200).json(updatedDriver);
 }
 
+export const updatePix  = async (req,res) => {
+
+    const {driverId,favorecido,chave} = req.body;
+
+    if(!favorecido || !chave ||  favorecido=='' || chave ==''){
+        return res.status(400).json({error: 'Campos obrigatórios não informados.'});
+    }
+    const pix = {favorecido,chave};
+    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{pix},{new:true}).select('name email telefone avatar veiculo online doc pix');
+    if (!updatedDriver) {
+        return res.status(404).json({error: 'Motorista não encontrado.'});
+      }
+   
+      return res.status(200).json(updatedDriver);
+
+
+}
+
+export const updateVeiculo  = async (req,res) => {
+
+    const {driverId,modelo,cor,placa} = req.body;
+
+    if(!modelo || !cor || !placa || modelo=='' || cor =='' || placa ==''){
+        return res.status(400).json({error: 'Campos obrigatórios não informados.'});
+    }
+
+    const veiculo = {modelo,cor,placa};
+
+    const updatedDriver = await Driver.findByIdAndUpdate(driverId,{veiculo},{new:true}).select('name email telefone avatar veiculo online doc pix');
+    if (!updatedDriver) {
+        return res.status(404).json({error: 'Motorista não encontrado.'});
+      }
+   
+      return res.status(200).json(updatedDriver);
+
+
+}
+
