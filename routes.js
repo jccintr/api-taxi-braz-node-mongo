@@ -23,6 +23,7 @@ router.post("/drivers/location",AuthDriver,DriverController.updateLocation);
 router.get("/drivers/location",DriverController.getLocation);
 router.post("/drivers/status",AuthDriver,DriverController.setStatus);
 router.post("/drivers/pushtoken",AuthDriver,DriverController.storePushToken);
+router.post("/drivers/update",AuthDriver,DriverController.update);
 // Ride routes
 router.post("/rides",AuthPassenger,RideController.store);
 router.post("/rides/price",AuthPassenger,RideController.price);

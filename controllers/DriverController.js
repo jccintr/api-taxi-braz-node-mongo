@@ -131,3 +131,19 @@ export const storePushToken =  async (req,res) => {
  
 }
 
+export const update  = async (req,res) => {
+
+    const {driverId,name,telefone,avatar} = req.body;
+
+    if(!name || !telefone ||  name=='' || telefone ==''){
+        return res.status(400).json({error: 'Campos obrigatórios não informados.'});
+    }
+
+  const updatedDriver = await Driver.findByIdAndUpdate(driverId,{name,telefone,avatar},{new:true}).select('name email telefone avatar veiculo online doc pix');
+   if (!updatedDriver) {
+     return res.status(404).json({error: 'Motorista não encontrado.'});
+   }
+
+   return res.status(200).json(updatedDriver);
+}
+
