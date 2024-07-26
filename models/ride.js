@@ -17,6 +17,7 @@ const rideSchema = new mongoose.Schema({
         ref: "Driver",
         default:null
     },
+    veiculo:{modelo:String,cor:String,placa:String},
     origem:{latitude:Number,longitude:Number,address:String},
     destino:{latitude:Number,longitude:Number,address:String},
     distancia:{  // km
