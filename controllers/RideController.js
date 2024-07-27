@@ -63,3 +63,13 @@ export const price = async (req,res) => {
 
 
 }
+
+export const index =  async (req,res) => {
+
+    const rides = await Ride.find({status:0}).populate('passenger','name avatar').select('distancia duracao valor origem.address destino.address');
+
+
+    return res.status(200).json(rides);
+
+
+}
