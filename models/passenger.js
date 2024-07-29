@@ -29,6 +29,11 @@ const passengerSchema = new mongoose.Schema({
         required:false,
         default: null
      },
+     rating:{
+      type:Number,
+      required:false,
+      default: 5
+      },
      pushToken:{
         type:String,
         required:false,

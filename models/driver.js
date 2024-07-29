@@ -30,6 +30,11 @@ const driverSchema = new mongoose.Schema({
       required:false,
       default: null
    },
+   rating:{
+      type:Number,
+      required:false,
+      default: 5
+      },
    online:{
       type:Boolean,
       required:false,
