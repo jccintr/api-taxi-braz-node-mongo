@@ -38,6 +38,63 @@ export const store = async (req,res) => {
 
 }
 
+export const accept = async (req,res) => {
+
+    const rideId = req.params.id;
+    const {driverId} = req.body;
+    
+    const ride = await Ride.findById(rideId);
+    ride.status = 1;
+    ride.driver = driverId;
+    ride.events.push({data: new Date(),descricao: "Corrida aceita"});
+    await ride.save();
+
+    return res.status(200).json(ride);
+
+  
+
+}
+
+export const start = async (req,res) => {
+
+    const rideId = req.params.id;
+   
+    
+    const ride = await Ride.findById(rideId);
+    ride.status = 2;
+    ride.events.push({data: new Date(),descricao: "Corrida iniciada"});
+    await ride.save();
+
+    return res.status(200).json(ride);
+
+}
+
+export const finish = async (req,res) => {
+
+    const rideId = req.params.id;
+   
+    
+    const ride = await Ride.findById(rideId);
+    ride.status = 3;
+    ride.events.push({data: new Date(),descricao: "Corrida concluida"});
+    await ride.save();
+
+    return res.status(200).json(ride);
+
+}
+
+export const status = async (req,res) => {
+    const rideId = req.params.id;
+
+    const ride = await Ride.findById(rideId,'status');
+
+    if (!ride){
+        return res.status(404).json({error:'Corrida não encontrada'});
+    }
+
+    return res.status(200).json({status:ride.status});
+}
+
 export const price = async (req,res) => {
 
     // parametros a serem considerados: preco do combustivel, distancia, horario
