@@ -1,5 +1,6 @@
 
 import { WebSocketServer,WebSocket } from 'ws';
+import jsonwebtoken from 'jsonwebtoken';
 
 
 
@@ -13,9 +14,20 @@ const websocket = (server) => {
 
   const wss = new WebSocketServer({server});
 
+  
 wss.on('connection', (ws, req) => {
- // ws.on('error', onSocketPostError);
-   
+ 
+   console.log('cliente conectado');
+   console.log(req.url);
+   const token = req.url.substring(1);
+   console.log('token',token);
+   const decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET);
+   ws.id = decoded.passengerId;
+
+  
+    ws.send("Bem vindo ao ws taxi braz");
+
+
   ws.on('message', (msg, isBinary) => {
       wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
@@ -30,7 +42,7 @@ wss.on('connection', (ws, req) => {
 
 });
 
-
+  return wss;
 }
 
 export default websocket;

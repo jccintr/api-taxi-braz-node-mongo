@@ -1,6 +1,7 @@
 import Ride from '../models/ride.js';
 import Driver from '../models/driver.js';
 import Passenger from '../models/passenger.js';
+import { WebSocket } from 'ws';
 
 
 
@@ -9,9 +10,9 @@ export const store = async (req,res) => {
     
     const {passengerId,origem,destino,duracao,distancia,valor,pagamento} = req.body;
     
-    const event = {Data: Date.now,Description: "Corrida solicitada"};
+    //const event = {Data: Date.now,Description: "Corrida solicitada"};
     const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento});
-    newRide.events.push({data: new Date(),descricao: "Corrida solicitada"});
+    newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
 
     const passenger = await Passenger.findById(passengerId).select('name'); 
@@ -20,7 +21,7 @@ export const store = async (req,res) => {
     const toDrivers = [];
     drivers.forEach((driver)=>toDrivers.push(driver.pushToken));
 
-   
+    // envia a notificação para o motorista
     const sound = 'default';
     const title = 'Nova Corrida';
     const body = `${passenger.name} solicita uma corrida de ${origem.address}, para ${destino.address}, no valor de R$ ${valor.toFixed(2)}.`;
@@ -44,12 +45,31 @@ export const accept = async (req,res) => {
     const {driverId} = req.body;
     
     const ride = await Ride.findById(rideId);
+    
+
+
+    if(ride.status!==0) {
+       return res.status(400).json({error: 'Corrida não disponível no momento.'});
+    }
+    const driver = await Driver.findById(driverId);
     ride.status = 1;
     ride.driver = driverId;
+    ride.veiculo = driver.veiculo;
     ride.events.push({data: new Date(),descricao: "Corrida aceita"});
     await ride.save();
 
-    return res.status(200).json(ride);
+     const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating').populate('driver','name avatar rating').select('data distancia duracao valor origem destino pagamento events');
+
+     const wss = req.app.get("wss");
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            if(cliente.id==ride.passenger._id){
+                client.send(newRide);
+            }
+        }
+      });
+
+    return res.status(200).json(newRide);
 
   
 
@@ -125,8 +145,21 @@ export const index =  async (req,res) => {
 
     const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').select('data distancia duracao valor origem destino pagamento');
 
-
     return res.status(200).json(rides);
 
-
 }
+
+// export const teste =  async (req,res) => {
+
+//     const wss = req.app.get("wss")
+//     //console.log(wss.clients[0].id);
+
+//     wss.clients.forEach((client) => {
+//         if (client.readyState === WebSocket.OPEN) {
+//             console.log(client.id);
+//         }
+//     });
+
+//     return res.status(200).json({status:'ok'});
+
+// }

@@ -35,4 +35,6 @@ router.post("/rides/:id/accept",AuthDriver,RideController.accept);
 router.post("/rides/:id/start",AuthDriver,RideController.start);
 router.post("/rides/:id/finish",AuthDriver,RideController.finish);
 
+//router.get("/ws",RideController.teste);
+
 export default router;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { WebSocketServer,WebSocket } from 'ws';
+//import { WebSocketServer,WebSocket } from 'ws';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import router from './routes.js';
@@ -40,27 +40,9 @@ connectDatabase()
 
 const server = app.listen(process.env.PORT,()=>{console.log('Servidor ouvindo a porta '+ process.env.PORT)});
 
-websocket(server);
+const wss = websocket(server);
 
-
-
-// const wss = new WebSocketServer({server});
-
-// wss.on('connection', (ws, req) => {
-//  // ws.on('error', onSocketPostError);
-   
-//   ws.on('message', (msg, isBinary) => {
-//       wss.clients.forEach((client) => {
-//           if (client.readyState === WebSocket.OPEN) {
-//               client.send(msg, { binary: isBinary });
-//           }
-//       });
-//   });
-
-//   ws.on('close', () => {
-//       console.log('Connection closed');
-//   });
-// });
+app.set("wss", wss);
 
 
 
