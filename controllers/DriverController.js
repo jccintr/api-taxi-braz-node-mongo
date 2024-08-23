@@ -1,4 +1,5 @@
 import Driver from '../models/driver.js';
+import Ride from '../models/ride.js';
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 
@@ -88,7 +89,10 @@ export const updateLocation =  async (req,res) => {
   if(!updatedLocation){
       return res.status(404).json({message: "Driver não encontrado"});
   } else {
-      return res.status(200).json({message:"Location updated"});
+
+    const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').select('data distancia duracao valor origem destino pagamento');
+    return res.status(200).json(rides);
+    //  return res.status(200).json({message:"Location updated"});
   }
 
 }

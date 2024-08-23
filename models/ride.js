@@ -20,6 +20,8 @@ const rideSchema = new mongoose.Schema({
     veiculo:{modelo:String,cor:String,placa:String},
     origem:{latitude:Number,longitude:Number,address:String},
     destino:{latitude:Number,longitude:Number,address:String},
+    embarque:{data:Date,latitude:Number,longitude:Number},
+    desembarque:{data:Date,latitude:Number,longitude:Number},
     distancia:{  // km
         type:Number,
         required:true
@@ -40,6 +42,16 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    driverRating:{
+        type:Number,
+        required:false,
+        default: null
+        },
+    passengerRating:{
+        type:Number,
+        required:false,
+        default: null
+        },
     events:[
         {
         data:{

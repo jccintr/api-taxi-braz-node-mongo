@@ -32,8 +32,12 @@ router.get("/rides/:id/status",AuthPassenger,RideController.status);
 router.post("/rides",AuthPassenger,RideController.store);
 router.post("/rides/price",AuthPassenger,RideController.price);
 router.post("/rides/:id/accept",AuthDriver,RideController.accept);
-router.post("/rides/:id/start",AuthDriver,RideController.start);
-router.post("/rides/:id/finish",AuthDriver,RideController.finish);
+router.post("/rides/:id/onway",AuthDriver,RideController.onWay);
+router.post("/rides/:id/arrived",AuthDriver,RideController.arrived);
+router.post("/rides/:id/started",AuthDriver,RideController.start);
+router.post("/rides/:id/finished",AuthDriver,RideController.finish);
+router.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassenger);
+router.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
 
 //router.get("/ws",RideController.teste);
 

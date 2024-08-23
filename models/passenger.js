@@ -34,6 +34,16 @@ const passengerSchema = new mongoose.Schema({
       required:false,
       default: 5
       },
+     votes:{
+      type:Number,
+      required:false,
+      default: 0
+      },
+      totalRating:{
+         type:Number,
+         required:false,
+         default: 0
+         },
      pushToken:{
         type:String,
         required:false,

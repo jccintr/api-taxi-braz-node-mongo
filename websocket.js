@@ -17,15 +17,22 @@ const websocket = (server) => {
   
 wss.on('connection', (ws, req) => {
  
-   console.log('cliente conectado');
+   console.log('cliente conectado ao ws');
    console.log(req.url);
    const token = req.url.substring(1);
-   console.log('token',token);
+   console.log('token do cliente',token);
+
+
+  //  try {
+    
+  //  } catch (error) {
+    
+  //  }
    const decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET);
    ws.id = decoded.passengerId;
 
   
-    ws.send("Bem vindo ao ws taxi braz");
+  //  ws.send("Bem vindo ao ws taxi braz");
 
 
   ws.on('message', (msg, isBinary) => {
@@ -37,7 +44,7 @@ wss.on('connection', (ws, req) => {
   });
 
   ws.on('close', () => {
-      console.log('Connection closed');
+      console.log('WS Connection closed');
   });
 
 });
