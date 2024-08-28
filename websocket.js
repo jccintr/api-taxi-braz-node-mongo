@@ -18,7 +18,7 @@ const websocket = (server) => {
 wss.on('connection', (ws, req) => {
  
    console.log('cliente conectado ao ws');
-   console.log(req.url);
+   //console.log(req.url);
    const token = req.url.substring(1);
    console.log('token do cliente',token);
 

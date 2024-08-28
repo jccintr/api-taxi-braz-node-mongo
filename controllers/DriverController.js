@@ -8,7 +8,6 @@ export const store = async (req,res) => {
    
     const {name,email,password,telefone,doc,veiculo,pix} = req.body;
 
-      console.log(req.body);
 
       if(!name || !email || !password || !telefone  || !doc || name=='' || email == '' || password == '' || telefone =='' || doc ==''){
           return res.status(400).json({error: 'Campos obrigatórios não informados.'});

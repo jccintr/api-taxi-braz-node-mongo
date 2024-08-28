@@ -36,6 +36,8 @@ router.post("/rides/:id/onway",AuthDriver,RideController.onWay);
 router.post("/rides/:id/arrived",AuthDriver,RideController.arrived);
 router.post("/rides/:id/started",AuthDriver,RideController.start);
 router.post("/rides/:id/finished",AuthDriver,RideController.finish);
+router.post("/rides/:id/cancel/passenger",AuthPassenger,RideController.passengerCancel);
+router.post("/rides/:id/cancel/driver",AuthDriver,RideController.driverCancel);
 router.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassenger);
 router.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
 

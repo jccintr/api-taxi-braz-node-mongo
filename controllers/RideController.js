@@ -24,7 +24,7 @@ export const store = async (req,res) => {
             toDrivers.push(driver.pushToken);
         }
     });
-    console.log('driversArray',toDrivers);
+    
     // envia a notificação para o motorista
     const sound = 'default';
     const title = 'Nova Corrida';
@@ -179,6 +179,63 @@ export const finish = async (req,res) => {
 
    return res.status(200).json(newRide);
 
+}
+
+export const passengerCancel = async (req,res) => {
+
+    const {passengerId} = req.body;
+    const rideId = req.params.id;
+
+    const ride = await Ride.findById(rideId);
+    
+    if(ride.status!==0){
+        return res.status(400).json({error:'Esta corrida não pode ser cancelada.'});
+    }
+
+    if(ride.passenger != passengerId){
+        return res.status(403).json({error:'Você não tem permissão para cancelar esta corrida.'});
+    }
+
+
+    ride.status = -1;
+    ride.events.push({data: new Date(),descricao: "Corrida cancelada pelo passageiro"});
+    await ride.save();
+
+    return res.status(200).json(ride);
+}
+
+export const driverCancel = async (req,res) => {
+
+    const {driverId} = req.body;
+    const rideId = req.params.id;
+
+    const ride = await Ride.findById(rideId);
+    
+    // if(ride.status!==0){
+    //     return res.status(400).json({error:'Esta corrida não pode ser cancelada.'});
+    // }
+
+    if(ride.driver._id != driverId){
+        return res.status(403).json({error:'Você não tem permissão para cancelar esta corrida.'});
+    }
+
+
+    ride.status = -2;
+    ride.events.push({data: new Date(),descricao: "Corrida cancelada pelo motorista"});
+    await ride.save();
+
+    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').select('status data distancia duracao valor origem destino pagamento events veiculo');
+
+    const wss = req.app.get("wss");
+     wss.clients.forEach((client) => {
+       if (client.readyState === WebSocket.OPEN) {
+           if(client.id==ride.passenger._id){
+               client.send(JSON.stringify(newRide));
+           }
+       }
+     });
+
+   return res.status(200).json(newRide);
 }
 
 export const status = async (req,res) => {
