@@ -15,6 +15,7 @@ router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/auth/login",PassengerController.login);
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);
+router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides);
 // Driver routes
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);
@@ -26,6 +27,7 @@ router.post("/drivers/pushtoken",AuthDriver,DriverController.storePushToken);
 router.post("/drivers/update",AuthDriver,DriverController.update);
 router.post("/drivers/update/pix",AuthDriver,DriverController.updatePix);
 router.post("/drivers/update/veiculo",AuthDriver,DriverController.updateVeiculo);
+router.get("/drivers/rides",AuthDriver,DriverController.driverRides);
 // Ride routes
 router.get("/rides",AuthDriver,RideController.index);
 router.get("/rides/:id/status",AuthPassenger,RideController.status);
@@ -40,6 +42,8 @@ router.post("/rides/:id/cancel/passenger",AuthPassenger,RideController.passenger
 router.post("/rides/:id/cancel/driver",AuthDriver,RideController.driverCancel);
 router.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassenger);
 router.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
+router.get("/rides/:id/detail/passenger",AuthPassenger,RideController.detailPassenger);
+router.get("/rides/:id/detail/driver",AuthDriver,RideController.detailDriver);
 
 //router.get("/ws",RideController.teste);
 

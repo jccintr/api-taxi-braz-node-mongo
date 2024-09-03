@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import Passenger from '../models/passenger.js';
+import Ride from '../models/ride.js';
 
 
     export const login =  async (req,res) => {
@@ -92,3 +93,16 @@ import Passenger from '../models/passenger.js';
 
        return res.status(200).json(updatedPassenger);
     }
+
+    export const passengerRides = async (req,res) => {
+
+        const {passengerId} = req.body;
+    
+        const rides = await Ride.find({passenger:passengerId}).select('data status origem destino');
+    
+    
+        return res.status(200).json(rides);
+    
+    }
+    
+    
