@@ -154,6 +154,32 @@ export const start = async (req,res) => {
 
 }
 
+export const restoreDriverRide = async (req,res) => {
+    const rideId = req.params.id;
+
+    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').select('status data distancia duracao valor origem destino pagamento events veiculo');
+
+    if(!ride){
+        return res.status(404).json({error:'Corrida não encontrada.'});
+    }
+    return res.status(200).json(ride);
+
+}
+
+export const restorePassengerRide = async (req,res) => {
+
+    const rideId = req.params.id;
+    console.log('restore passenger rideId =>',rideId);
+    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').select('status data distancia duracao valor origem destino pagamento events veiculo');
+
+
+    if(!ride){
+        return res.status(404).json({error:'Corrida não encontrada.'});
+    }
+    return res.status(200).json(ride);
+
+}
+
 export const finish = async (req,res) => {
 
     const rideId = req.params.id;
