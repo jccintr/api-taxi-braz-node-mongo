@@ -53,7 +53,17 @@ const passengerSchema = new mongoose.Schema({
         type:Boolean,
         required: false,
         default: true
-     }
+     },
+     emailVerifiedAt:{
+      type:Date,
+      required:false,
+      default:null
+     },
+     emailVerificationCode:{
+      type:String,
+      required:false,
+      default: null
+   },
     
     
    

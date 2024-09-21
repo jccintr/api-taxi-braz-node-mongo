@@ -16,6 +16,7 @@ router.post("/passengers/auth/login",PassengerController.login);
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);
 router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides);
+router.post("/passengers/verifyemail",AuthPassenger,PassengerController.verifyEmail);
 // Driver routes
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);

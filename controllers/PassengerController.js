@@ -12,7 +12,7 @@ import Ride from '../models/ride.js';
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const passenger = await Passenger.findOne({ email }).select('name email telefone password avatar doc');
+        const passenger = await Passenger.findOne({ email }).select('name email telefone password avatar doc emailVerifiedAt');
 
     if(!passenger){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
@@ -55,10 +55,14 @@ import Ride from '../models/ride.js';
 
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
-        const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc});
+        //cria o codigo de verificacao do email
+        const  strRandomNumber = Math.random().toString();
+        const emailVerificationCode = strRandomNumber.substring(strRandomNumber.length-6);
+       
+        const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
-        const { password:p, ...rest } = newPassenger._doc;
-        return res.status(201).json(rest);
+       // const { password:p, ...rest } = newPassenger._doc;
+        return res.status(201).json({mensagem:'Conta criada com sucesso.'});
        
 
     }
@@ -68,7 +72,7 @@ import Ride from '../models/ride.js';
         const {passengerId} = req.body;
        
     
-       const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc');
+       const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc emailVerifiedAt');
     
        if (!passenger) {
          return res.status(404).json({error: 'Usuário não encontrado.'});
@@ -102,6 +106,26 @@ import Ride from '../models/ride.js';
     
     
         return res.status(200).json(rides);
+    
+    }
+
+    export const verifyEmail = async (req,res) => {
+
+        const {passengerId,code} = req.body;
+    
+        const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc emailVerifiedAt');
+    
+        if(passenger.emailVerificationCode===code){
+
+            passenger.emailVerifiedAt = new Date();
+            await passenger.save();
+            return res.status(200).json(passenger);
+
+        } else {
+            return res.status(401).json({error:'Código de verificação inválido.'});
+        }
+    
+      
     
     }
     
