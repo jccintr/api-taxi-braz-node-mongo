@@ -112,10 +112,10 @@ import Ride from '../models/ride.js';
     export const verifyEmail = async (req,res) => {
 
         const {passengerId,code} = req.body;
-    
-        const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc emailVerifiedAt');
-    
-        if(passenger.emailVerificationCode===code){
+       
+        const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc emailVerificationCode emailVerifiedAt');
+        
+        if(passenger.emailVerificationCode==code){
 
             passenger.emailVerifiedAt = new Date();
             await passenger.save();
