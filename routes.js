@@ -13,6 +13,8 @@ const router = Router();
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/auth/login",PassengerController.login);
+router.post("/passengers/auth/recoverypassword",PassengerController.recoveryPassword);
+router.post("/passengers/auth/resetpassword",PassengerController.resetPassword);
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);
 router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides);

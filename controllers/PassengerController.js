@@ -128,5 +128,17 @@ import Ride from '../models/ride.js';
       
     
     }
+
+    export const recoveryPassword = async (req,res) => {
+
+        //const {email} = req.body;
+        return res.status(200).json({mensagem:'Solicitação de alteração de senha recebida.'});
+    }
+
+    export const resetPassword = async (req,res) => {
+        //const {email,code,password} = req.body;
+        return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
+    }
+    
     
     
