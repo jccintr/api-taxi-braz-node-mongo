@@ -2,6 +2,7 @@ import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import Passenger from '../models/passenger.js';
 import Ride from '../models/ride.js';
+import { sendEmail } from './util/sendEmail.js';
 
 
     export const login =  async (req,res) => {
@@ -56,10 +57,11 @@ import Ride from '../models/ride.js';
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
        
-        const emailVerificationCode = generateEmailVerificationCode();
+        const emailVerificationCode = generateVerificationCode();
 
         const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
+        sendEmail('Verifique o seu E-mail',email,'Corpo do email');
        // const { password:p, ...rest } = newPassenger._doc;
         return res.status(201).json({mensagem:'Conta criada com sucesso.'});
        
@@ -114,11 +116,12 @@ import Ride from '../models/ride.js';
         // pesquisar pelo pax
         const passenger = await Passenger.findById(passengerId).select('email emailVerificationCode');
         // gerar novo codigo (criar funcao para isto)
-        const emailVerificationCode = generateEmailVerificationCode();
+        const emailVerificationCode = generateVerificationCode();
         //salvar no bd
         passenger.emailVerificationCode = emailVerificationCode;
         await passenger.save();
         //enviar o email com o codigo (criar funcao para isto)
+        sendEmail('Verifique o seu E-mail',passenger.email,'Corpo do email');
         return res.status(200).json({mensagem:'Código de verificação enviado com sucesso.'});
     }
 
@@ -151,7 +154,7 @@ import Ride from '../models/ride.js';
         return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
     }
 
-    const generateEmailVerificationCode = () => {
+    const generateVerificationCode = () => {
 
         const  strRandomNumber = Math.random().toString();
         return strRandomNumber.substring(strRandomNumber.length-6);
