@@ -55,10 +55,9 @@ import Ride from '../models/ride.js';
 
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
-        //cria o codigo de verificacao do email
-        const  strRandomNumber = Math.random().toString();
-        const emailVerificationCode = strRandomNumber.substring(strRandomNumber.length-6);
        
+        const emailVerificationCode = generateEmailVerificationCode();
+
         const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
        // const { password:p, ...rest } = newPassenger._doc;
@@ -109,6 +108,20 @@ import Ride from '../models/ride.js';
     
     }
 
+    export const sendVerifyEmail = async (req,res) => {
+        const {passengerId} = req.body;
+
+        // pesquisar pelo pax
+        const passenger = await Passenger.findById(passengerId).select('email emailVerificationCode');
+        // gerar novo codigo (criar funcao para isto)
+        const emailVerificationCode = generateEmailVerificationCode();
+        //salvar no bd
+        passenger.emailVerificationCode = emailVerificationCode;
+        await passenger.save();
+        //enviar o email com o codigo (criar funcao para isto)
+        return res.status(200).json({mensagem:'Código de verificação enviado com sucesso.'});
+    }
+
     export const verifyEmail = async (req,res) => {
 
         const {passengerId,code} = req.body;
@@ -125,8 +138,6 @@ import Ride from '../models/ride.js';
             return res.status(401).json({error:'Código de verificação inválido.'});
         }
     
-      
-    
     }
 
     export const recoveryPassword = async (req,res) => {
@@ -138,6 +149,13 @@ import Ride from '../models/ride.js';
     export const resetPassword = async (req,res) => {
         //const {email,code,password} = req.body;
         return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
+    }
+
+    const generateEmailVerificationCode = () => {
+
+        const  strRandomNumber = Math.random().toString();
+        return strRandomNumber.substring(strRandomNumber.length-6);
+
     }
     
     

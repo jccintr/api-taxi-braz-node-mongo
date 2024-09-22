@@ -13,12 +13,17 @@ const router = Router();
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/auth/login",PassengerController.login);
+
+router.post("/passengers/auth/email/verify/request",AuthPassenger,PassengerController.sendVerifyEmail);
+router.post("/passengers/auth/verifyemail",AuthPassenger,PassengerController.verifyEmail);
+
 router.post("/passengers/auth/recoverypassword",PassengerController.recoveryPassword);
 router.post("/passengers/auth/resetpassword",PassengerController.resetPassword);
+
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);
 router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides);
-router.post("/passengers/verifyemail",AuthPassenger,PassengerController.verifyEmail);
+
 // Driver routes
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);
