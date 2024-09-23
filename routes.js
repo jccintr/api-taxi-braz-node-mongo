@@ -17,8 +17,8 @@ router.post("/passengers/auth/login",PassengerController.login);
 router.post("/passengers/auth/email/verify/request",AuthPassenger,PassengerController.sendVerifyEmail);
 router.post("/passengers/auth/verifyemail",AuthPassenger,PassengerController.verifyEmail);
 
-router.post("/passengers/auth/recoverypassword",PassengerController.recoveryPassword);
-router.post("/passengers/auth/resetpassword",PassengerController.resetPassword);
+router.post("/passengers/auth/password/request",PassengerController.requestEmailPassword);
+router.post("/passengers/auth/password/reset",PassengerController.resetPassword);
 
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);

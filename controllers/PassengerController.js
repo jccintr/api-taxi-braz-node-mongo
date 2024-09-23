@@ -2,7 +2,7 @@ import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import Passenger from '../models/passenger.js';
 import Ride from '../models/ride.js';
-import { sendVerificationEmail } from '../util/sendEmail.js';
+import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.js';
 
 
     export const login =  async (req,res) => {
@@ -145,9 +145,21 @@ import { sendVerificationEmail } from '../util/sendEmail.js';
     
     }
 
-    export const recoveryPassword = async (req,res) => {
+    export const requestEmailPassword = async (req,res) => {
 
-        //const {email} = req.body;
+        const {email} = req.body;
+
+        const passenger = await Passenger.findOne({ email }).select('name resetPasswordCode');
+
+        if(!passenger){
+            return res.status(404).json({error:'Registro não encontrado.'});
+        }
+        
+        const resetPasswordCode = generateVerificationCode();
+        passenger.resetPasswordCode = resetPasswordCode;
+        await passenger.save();
+        sendResetPasswordEmail('jccintr@gmail.com',resetPasswordCode);
+        
         return res.status(200).json({mensagem:'Solicitação de alteração de senha recebida.'});
     }
 
