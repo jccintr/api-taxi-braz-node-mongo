@@ -2,7 +2,7 @@ import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import Passenger from '../models/passenger.js';
 import Ride from '../models/ride.js';
-import { sendEmail } from './util/sendEmail.js';
+import { sendVerificationEmail } from '../util/sendEmail.js';
 
 
     export const login =  async (req,res) => {
@@ -61,8 +61,9 @@ import { sendEmail } from './util/sendEmail.js';
 
         const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
-        sendEmail('Verifique o seu E-mail',email,'Corpo do email');
-       // const { password:p, ...rest } = newPassenger._doc;
+        sendVerificationEmail('jccintr@gmail.com',emailVerificationCode);
+       
+        // const { password:p, ...rest } = newPassenger._doc;
         return res.status(201).json({mensagem:'Conta criada com sucesso.'});
        
 
@@ -121,7 +122,8 @@ import { sendEmail } from './util/sendEmail.js';
         passenger.emailVerificationCode = emailVerificationCode;
         await passenger.save();
         //enviar o email com o codigo (criar funcao para isto)
-        sendEmail('Verifique o seu E-mail',passenger.email,'Corpo do email');
+        sendVerificationEmail(passenger.email,emailVerificationCode);
+       
         return res.status(200).json({mensagem:'Código de verificação enviado com sucesso.'});
     }
 

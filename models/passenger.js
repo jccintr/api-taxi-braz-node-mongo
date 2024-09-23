@@ -64,6 +64,11 @@ const passengerSchema = new mongoose.Schema({
       required:false,
       default: null
    },
+   resetPasswordCode:{
+      type:String,
+      required:false,
+      default: null
+   },
     
     
    
