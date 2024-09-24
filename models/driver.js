@@ -62,7 +62,12 @@ const driverSchema = new mongoose.Schema({
       type:Boolean,
       required: false,
       default: true
-   }
+   },
+   resetPasswordCode:{
+      type:String,
+      required:false,
+      default: null
+   },
      
    
 },{timestamps: true});

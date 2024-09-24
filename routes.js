@@ -28,6 +28,8 @@ router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides)
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);
 router.post("/drivers/auth/token",AuthDriver,DriverController.validateToken);
+router.post("/drivers/auth/password/request",DriverController.requestEmailPassword);
+router.post("/drivers/auth/password/reset",DriverController.resetPassword);
 router.post("/drivers/location",AuthDriver,DriverController.updateLocation);
 router.get("/drivers/location",DriverController.getLocation);
 router.post("/drivers/status",AuthDriver,DriverController.setStatus);

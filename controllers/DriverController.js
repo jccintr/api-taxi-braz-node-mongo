@@ -2,6 +2,7 @@ import Driver from '../models/driver.js';
 import Ride from '../models/ride.js';
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
+import { sendResetPasswordEmail } from '../util/sendEmail.js';
 
 
 export const store = async (req,res) => {
@@ -196,6 +197,55 @@ export const driverRides = async (req,res) => {
 
 
     return res.status(200).json(rides);
+
+}
+
+export const requestEmailPassword = async (req,res) => {
+
+    const {email} = req.body;
+
+    const driver = await Driver.findOne({ email }).select('name resetPasswordCode');
+
+    if(!driver){
+        return res.status(404).json({error:'Registro não encontrado.'});
+    }
+    
+    const resetPasswordCode = generateVerificationCode();
+    driver.resetPasswordCode = resetPasswordCode;
+    await driver.save();
+    sendResetPasswordEmail(email,resetPasswordCode);
+    
+    return res.status(200).json({mensagem:'Solicitação de alteração de senha recebida.'});
+}
+
+export const resetPassword = async (req,res) => {
+
+    const {email,code,password} = req.body;
+
+    const driver = await Driver.findOne({ email }).select('resetPasswordCode password');
+
+    if(!driver){
+        return res.status(404).json({mensagem:'Motorista não encontrado.'});
+    }
+    if(driver.resetPasswordCode!==code){
+        return res.status(400).json({mensagem:'Código de verificação inválido.'});
+    }
+
+    const salt = bcryptjs.genSaltSync(10);
+    const password_hash = bcryptjs.hashSync(password,salt);
+    driver.password = password_hash;
+    driver.resetPasswordCode = null;
+    await driver.save();
+
+    return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
+
+
+}
+
+const generateVerificationCode = () => {
+
+    const  strRandomNumber = Math.random().toString();
+    return strRandomNumber.substring(strRandomNumber.length-6);
 
 }
 
