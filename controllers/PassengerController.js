@@ -164,8 +164,27 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
     }
 
     export const resetPassword = async (req,res) => {
-        //const {email,code,password} = req.body;
+
+        const {email,code,password} = req.body;
+
+        const passenger = await Passenger.findOne({ email }).select('resetPasswordCode password');
+
+        if(!passenger){
+            return res.status(404).json({mensagem:'Passageiro não encontrado.'});
+        }
+        if(passenger.resetPasswordCode!==code){
+            return res.status(400).json({mensagem:'Código de verificação inválido.'});
+        }
+
+        const salt = bcryptjs.genSaltSync(10);
+        const password_hash = bcryptjs.hashSync(password,salt);
+        passenger.password = password_hash;
+        passenger.resetPasswordCode = null;
+        await passenger.save();
+        
         return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
+
+
     }
 
     const generateVerificationCode = () => {
