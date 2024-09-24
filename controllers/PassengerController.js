@@ -61,7 +61,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
 
         const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
-        sendVerificationEmail('jccintr@gmail.com',emailVerificationCode);
+        sendVerificationEmail(passenger.email,emailVerificationCode);
        
         // const { password:p, ...rest } = newPassenger._doc;
         return res.status(201).json({mensagem:'Conta criada com sucesso.'});
@@ -158,7 +158,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
         const resetPasswordCode = generateVerificationCode();
         passenger.resetPasswordCode = resetPasswordCode;
         await passenger.save();
-        sendResetPasswordEmail('jccintr@gmail.com',resetPasswordCode);
+        sendResetPasswordEmail(email,resetPasswordCode);
         
         return res.status(200).json({mensagem:'Solicitação de alteração de senha recebida.'});
     }
@@ -181,7 +181,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
         passenger.password = password_hash;
         passenger.resetPasswordCode = null;
         await passenger.save();
-        
+
         return res.status(200).json({mensagem:'Senha alterada com sucesso.'});
 
 
