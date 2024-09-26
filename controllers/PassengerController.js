@@ -61,7 +61,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
 
         const newPassenger = new Passenger({name,email,password:password_hash,telefone,doc,emailVerificationCode});
         await newPassenger.save();
-        sendVerificationEmail(passenger.email,emailVerificationCode);
+        sendVerificationEmail(newPassenger.email,emailVerificationCode);
        
         // const { password:p, ...rest } = newPassenger._doc;
         return res.status(201).json({mensagem:'Conta criada com sucesso.'});
