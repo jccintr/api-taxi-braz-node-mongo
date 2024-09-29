@@ -42,6 +42,11 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    motivoCancelamento:{
+        type:String,
+        required:false,
+        default:null
+    },
     driverRating:{
         type:Number,
         required:false,

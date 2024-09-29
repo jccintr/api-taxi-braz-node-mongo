@@ -238,15 +238,12 @@ export const passengerCancel = async (req,res) => {
 
 export const driverCancel = async (req,res) => {
 
-    const {driverId} = req.body;
+    const {driverId,motivo} = req.body;
     const rideId = req.params.id;
 
     const ride = await Ride.findById(rideId);
     
-    // if(ride.status!==0){
-    //     return res.status(400).json({error:'Esta corrida não pode ser cancelada.'});
-    // }
-
+   
     if(ride.driver._id != driverId){
         return res.status(403).json({error:'Você não tem permissão para cancelar esta corrida.'});
     }
@@ -254,6 +251,7 @@ export const driverCancel = async (req,res) => {
 
     ride.status = -2;
     ride.events.push({data: new Date(),descricao: "Corrida cancelada pelo motorista"});
+    ride.motivoCancelamento = motivo;
     await ride.save();
 
     const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').select('status data distancia duracao valor origem destino pagamento events veiculo');
