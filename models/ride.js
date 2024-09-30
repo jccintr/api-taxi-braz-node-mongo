@@ -34,6 +34,11 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    valorDriver:{
+        type:Number,
+        required:false,
+        default:0
+    },
     pagamento:{
         type:String,
         required:true
