@@ -34,7 +34,7 @@ const rideSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    valorDriver:{
+    valorPlataforma:{
         type:Number,
         required:false,
         default:0
