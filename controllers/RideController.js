@@ -289,7 +289,7 @@ export const price = async (req,res) => {
 
     const {distancia} = req.body;
 
-    const priceByKm = 5.0;
+    const priceByKm = 8.0;
 
     let ridePrice = 0;
 
