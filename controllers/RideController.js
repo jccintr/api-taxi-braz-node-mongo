@@ -197,6 +197,7 @@ export const finish = async (req,res) => {
     ride.desembarque = {data: new Date(),latitude:latitude,longitude:longitude};
     ride.events.push({data: new Date(),descricao: "Corrida concluida"});
     ride.valorPlataforma = ride.valor * process.env.PERCENTUAL_PLATAFORMA / 100;
+    ride.valorDriver = ride.valor - ride.valorPlataforma;
     await ride.save();
 
     const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').select('status data distancia duracao valor origem destino pagamento events veiculo');
