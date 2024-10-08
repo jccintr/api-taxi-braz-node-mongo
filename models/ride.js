@@ -45,8 +45,9 @@ const rideSchema = new mongoose.Schema({
         default:0
     },
     pagamento:{
-        type:String,
-        required:true
+        type: mongoose.Types.ObjectId,
+        ref: "Pagamento",
+        default:null
     },
     status:{
         type:Number,

@@ -11,7 +11,7 @@ export const store = async (req,res) => {
     const {passengerId,origem,destino,duracao,distancia,valor,pagamento} = req.body;
     
     //const event = {Data: Date.now,Description: "Corrida solicitada"};
-    const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento});
+    const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamento._id});
     newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
 
