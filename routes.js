@@ -3,6 +3,7 @@ import { Router } from 'express';
 import * as PassengerController from "./controllers/PassengerController.js";
 import * as DriverController from "./controllers/DriverController.js";
 import * as RideController from "./controllers/RideController.js";
+import * as PagamentoController from "./controllers/PagamentoController.js";
 import AuthPassenger from './middleware/AuthPassenger.js';
 import AuthDriver from './middleware/AuthDriver.js';
 
@@ -10,6 +11,9 @@ import AuthDriver from './middleware/AuthDriver.js';
 
 const router = Router();
 
+//Pagamento Routes
+router.get("/pagamentos",PagamentoController.index);
+router.post("/pagamentos",PagamentoController.store);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/auth/login",PassengerController.login);
