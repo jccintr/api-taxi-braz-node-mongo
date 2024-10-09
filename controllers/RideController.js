@@ -8,10 +8,10 @@ import { WebSocket } from 'ws';
 export const store = async (req,res) => {
 
     
-    const {passengerId,origem,destino,duracao,distancia,valor,pagamento} = req.body;
+    const {passengerId,origem,destino,duracao,distancia,valor,pagamentoId} = req.body;
     
     //const event = {Data: Date.now,Description: "Corrida solicitada"};
-    const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamento._id});
+    const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamentoId});
     newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
 
