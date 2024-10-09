@@ -90,7 +90,7 @@ export const updateLocation =  async (req,res) => {
       return res.status(404).json({message: "Driver não encontrado"});
   } else {
 
-    const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').select('data distancia duracao valor origem destino pagamento');
+    const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').populate('pagamento','nome').select('data distancia duracao valor origem destino');
     return res.status(200).json(rides);
     //  return res.status(200).json({message:"Location updated"});
   }
