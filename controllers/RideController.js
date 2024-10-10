@@ -356,7 +356,7 @@ export const detailPassenger =  async (req,res) => {
     const {passengerId} = req.body;
 
     try {
-        const ride = await Ride.findById(rideId).populate('driver','name avatar rating').select('data passenger status origem destino distancia duracao valor pagamento veiculo driverRating events');
+        const ride = await Ride.findById(rideId).populate('driver','name avatar rating').populate('pagamento','nome').select('data passenger status origem destino distancia duracao valor veiculo driverRating events');
         if(ride.passenger != passengerId)  throw 'Não autorizado';
         if(!ride) throw 'Corrida não encontrada';
         return res.status(200).json(ride);
@@ -374,7 +374,7 @@ export const detailDriver =  async (req,res) => {
     const {driverId} = req.body;
 
     try {
-        const ride = await Ride.findById(rideId).populate('passenger','name avatar rating').select('data driver status origem destino distancia duracao valor pagamento veiculo passengerRating events');
+        const ride = await Ride.findById(rideId).populate('passenger','name avatar rating').populate('pagamento','nome').select('data driver status origem destino distancia duracao valor veiculo passengerRating events');
         if(ride.driver != driverId)  throw 'Não autorizado';
         if(!ride) throw 'Corrida não encontrada';
         return res.status(200).json(ride);
