@@ -297,7 +297,7 @@ export const price = async (req,res) => {
     
     if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
 
-         ridePrice = {valor:process.env.VALOR_MINIMO_CORRIDA};
+         ridePrice = process.env.VALOR_MINIMO_CORRIDA;
 
     }
    
