@@ -293,12 +293,13 @@ export const price = async (req,res) => {
 
     let ridePrice = 0;
 
+    ridePrice = distancia * process.env.VALOR_POR_KM;
+    
+    if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
 
-   if(distancia<1){
-       ridePrice = priceByKm;
-   } else {
-       ridePrice = priceByKm * distancia;
-   }
+         ridePrice = {valor:process.env.VALOR_MINIMO_CORRIDA};
+
+    }
    
    const price = {valor:ridePrice};
 
