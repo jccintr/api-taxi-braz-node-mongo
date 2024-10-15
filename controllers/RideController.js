@@ -301,7 +301,10 @@ export const price = async (req,res) => {
 
     }
    
-   const price = {valor:ridePrice};
+
+   const price = {valor:parseFloat(ridePrice)};
+
+  
 
     return res.status(200).json(price);
 
