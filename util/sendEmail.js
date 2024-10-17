@@ -5,8 +5,8 @@ dotenv.config();
 
 export const sendVerificationEmail = async(to,code) => {
 
-  const subject = "Código de verificação Taxi Braz";
-  const body = `Por favor, informe o seguinte código ${code} para verificar o seu e-mail e começar a usar os nossos serviços.\nEsta é uma mensagem automática, não é necessário respondê-la.\n\nAtenciosamente\n\nEquipe Taxi Braz`;
+  const subject = "Código de verificação Braz Driver";
+  const body = `Por favor, informe o seguinte código ${code} para verificar o seu e-mail e começar a usar os nossos serviços.\nEsta é uma mensagem automática, não é necessário respondê-la.\n\nAtenciosamente\n\nEquipe Braz Driver`;
 
   const transporter = nodemailer.createTransport({
     pool: true,
@@ -72,8 +72,8 @@ export const sendVerificationEmail = async(to,code) => {
 
 export const sendResetPasswordEmail = async(to,code) => {
 
-  const subject = "Redefinição de senha Taxi Braz";
-  const body = `Por favor, informe o seguinte código ${code} para resetar a sua senha de acesso.\nEsta é uma mensagem automática, não é necessário respondê-la.\n\nAtenciosamente\n\nEquipe Taxi Braz`;
+  const subject = "Redefinição de senha Braz Driver";
+  const body = `Por favor, informe o seguinte código ${code} para resetar a sua senha de acesso.\nEsta é uma mensagem automática, não é necessário respondê-la.\n\nAtenciosamente\n\nEquipe Braz Driver`;
 
   const transporter = nodemailer.createTransport({
     pool: true,

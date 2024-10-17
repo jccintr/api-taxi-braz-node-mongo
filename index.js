@@ -30,7 +30,7 @@ app.get('/', function(req, res) {
 
   async function connectDatabase() {
 
-    await mongoose.connect(process.env.DB_CONNECTION).then(()=>{
+    await mongoose.connect(process.env.DB_CONNECTION_PROD).then(()=>{
         console.log('Conectado ao banco de dados com sucesso !');
     }).catch((error)=>{
         console.log("Falha ao conectar ao banco de dados.");
