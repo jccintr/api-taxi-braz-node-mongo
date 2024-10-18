@@ -249,3 +249,45 @@ const generateVerificationCode = () => {
 
 }
 
+export const getGanhos =  async (req,res) => {
+    
+    const {driverId,data} = req.body;
+    const dtHoje = new Date(data);
+    const startSufix = 'T00:00:00.000Z';
+    const endSufix = 'T23:59:59.000Z';
+
+    const strData = dtHoje.getFullYear()+'-'+(dtHoje.getMonth()+1)+'-'+dtHoje.getDate();
+
+    
+    const todayRides = await Ride.find({driver:driverId,status:5,data: { $gte: strData+startSufix, $lte: strData+endSufix }}).select('data valorDriver');
+    const todayTotal = todayRides.reduce( (n,{valorDriver}) => n + valorDriver,0)
+
+    const lastMonday = getMonday(data);
+    const strMonday = lastMonday.getFullYear()+'-'+(lastMonday.getMonth()+1)+'-'+lastMonday.getDate();
+    const weekRides = await Ride.find({driver:driverId,status:5,data: { $gte: strMonday+startSufix, $lte: strData+endSufix }}).select('data valorDriver');
+    const totalweek = weekRides.reduce( (n,{valorDriver}) => n + valorDriver,0)
+
+    const firstDayMonth = dtHoje.getFullYear()+'-'+(dtHoje.getMonth()+1)+'-01';
+    const monthRides = await Ride.find({driver:driverId,status:5,data: { $gte: firstDayMonth+startSufix, $lte: strData+endSufix }}).select('data valorDriver');
+    const totalMonth = monthRides.reduce( (n,{valorDriver}) => n + valorDriver,0)
+   
+
+    const hoje = {valor:todayTotal,corridas:todayRides.length};
+    const semana = {valor:totalweek,corridas:weekRides.length};
+    const mes = {valor:totalMonth,corridas:monthRides.length};
+
+    
+    return res.status(200).json({hoje,semana,mes});
+}
+
+
+function getMonday(d) {
+
+     d = new Date(d); 
+     var day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6 : 1); 
+     // adjust when day is sunday
+      return new Date(d.setDate(diff));
+     } 
+     
+
+

@@ -42,6 +42,7 @@ router.post("/drivers/update",AuthDriver,DriverController.update);
 router.post("/drivers/update/pix",AuthDriver,DriverController.updatePix);
 router.post("/drivers/update/veiculo",AuthDriver,DriverController.updateVeiculo);
 router.get("/drivers/rides",AuthDriver,DriverController.driverRides);
+router.post("/drivers/ganhos",AuthDriver,DriverController.getGanhos);
 // Ride routes
 router.get("/rides",AuthDriver,RideController.index);
 router.get("/rides/:id/status",AuthPassenger,RideController.status);
