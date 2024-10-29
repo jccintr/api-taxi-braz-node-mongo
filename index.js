@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true}))
 
 
 app.get('/', function(req, res) {
-    res.send('Bem Vindo a Taxi Braz API');
+    res.send('Bem Vindo a Braz Driver API');
   });
   app.get('/awake', function(req, res) {
     res.send('Hello !');
@@ -50,18 +50,18 @@ app.set("wss", wss);
 
 
 // mantem o ws acordado
-// const keepAwake = () => {
-//   setInterval(async () => {
-//     try {
-//       const response = await fetch('https://taxibraz.onrender.com/awake');
+const keepAwake = () => {
+  setInterval(async () => {
+    try {
+      const response = await fetch('https://taxibraz.onrender.com/awake');
       
-//     } catch (error) {
-//       console.error('Erro ao fazer ping:', error);
-//     }
-//   }, 50000); '50s'
-// };
+    } catch (error) {
+      console.error('Erro ao fazer ping:', error);
+    }
+  }, 50000); '50s'
+};
 
-// keepAwake();
+keepAwake();
 
 
 
