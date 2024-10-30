@@ -58,7 +58,7 @@ const keepAwake = () => {
     } catch (error) {
       console.error('Erro ao fazer ping:', error);
     }
-  }, 50000); '50s'
+  }, 50000); //'50s'
 };
 
 keepAwake();

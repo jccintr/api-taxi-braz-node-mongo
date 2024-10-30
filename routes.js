@@ -1,6 +1,7 @@
 import { Router } from 'express';
 //import * as AuthController from "./controllers/AuthController.js";
 import * as PassengerController from "./controllers/PassengerController.js";
+import * as PassengerMessageController from "./controllers/PassengerMessageController.js";
 import * as DriverController from "./controllers/DriverController.js";
 import * as RideController from "./controllers/RideController.js";
 import * as PagamentoController from "./controllers/PagamentoController.js";
@@ -16,6 +17,7 @@ router.get("/pagamentos",PagamentoController.index);
 router.post("/pagamentos",PagamentoController.store);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
+router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);
 router.post("/passengers/auth/login",PassengerController.login);
 
 router.post("/passengers/auth/email/verify/request",AuthPassenger,PassengerController.sendVerifyEmail);
