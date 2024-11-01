@@ -104,7 +104,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
 
         const {passengerId} = req.body;
     
-        const rides = await Ride.find({passenger:passengerId}).select('data status origem destino').sort({data: 'asc'});
+        const rides = await Ride.find({passenger:passengerId}).select('data status origem destino').sort({data: 'desc'});
            
         return res.status(200).json(rides);
     
