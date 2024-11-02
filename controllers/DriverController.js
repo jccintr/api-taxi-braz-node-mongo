@@ -193,7 +193,7 @@ export const driverRides = async (req,res) => {
 
     const {driverId} = req.body;
 
-    const rides = await Ride.find({driver:driverId}).select('data status origem destino');
+    const rides = await Ride.find({driver:driverId}).select('data status origem destino').sort({data: 'desc'});
 
 
     return res.status(200).json(rides);
