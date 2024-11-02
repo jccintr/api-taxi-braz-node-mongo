@@ -256,7 +256,11 @@ export const getGanhos =  async (req,res) => {
     const startSufix = 'T00:00:00.000Z';
     const endSufix = 'T23:59:59.000Z';
 
-    const strData = dtHoje.getFullYear()+'-'+(dtHoje.getMonth()+1)+'-'+dtHoje.getDate();
+    let dia = dtHoje.getDate();
+    if (dia<10){
+        dia = '0'+dia;
+    }
+    const strData = dtHoje.getFullYear()+'-'+(dtHoje.getMonth()+1)+'-'+dia;//dtHoje.getDate();
 
     
     const todayRides = await Ride.find({driver:driverId,status:5,data: { $gte: strData+startSufix, $lte: strData+endSufix }}).select('data valorDriver');
