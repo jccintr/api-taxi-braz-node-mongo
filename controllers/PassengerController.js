@@ -57,6 +57,8 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
         if (passenger){
             return res.status(400).json({error: 'Email já cadastrado.'});
         }
+        // para bloquear novos cadastros
+        return res.status(400).json({error: 'Campos obrigatórios não informados.'});
 
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
