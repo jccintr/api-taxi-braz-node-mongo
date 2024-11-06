@@ -13,9 +13,13 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const passenger = await Passenger.findOne({ email }).select('name email telefone password avatar doc emailVerifiedAt');
+        const passenger = await Passenger.findOne({ email }).select('name email telefone password avatar doc ativo emailVerifiedAt');
 
     if(!passenger){
+        return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
+    }
+
+    if(!passenger.ativo){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
     }
 
@@ -74,11 +78,15 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
         const {passengerId} = req.body;
        
     
-       const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc emailVerifiedAt');
+       const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc ativo emailVerifiedAt');
     
        if (!passenger) {
          return res.status(404).json({error: 'Usuário não encontrado.'});
        }
+
+       if (!passenger.ativo) {
+        return res.status(404).json({error: 'Usuário não encontrado.'});
+      }
 
        return res.status(200).json(passenger);
     }
