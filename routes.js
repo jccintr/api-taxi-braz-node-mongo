@@ -1,5 +1,6 @@
 import { Router } from 'express';
 //import * as AuthController from "./controllers/AuthController.js";
+import * as AdminController from "./controllers/AdminController.js";
 import * as PassengerController from "./controllers/PassengerController.js";
 import * as PassengerMessageController from "./controllers/PassengerMessageController.js";
 import * as DriverController from "./controllers/DriverController.js";
@@ -15,6 +16,9 @@ const router = Router();
 //Pagamento Routes
 router.get("/pagamentos",PagamentoController.index);
 router.post("/pagamentos",PagamentoController.store);
+// Admin Routes
+//router.post("/admin/auth/register",AdminController.store);
+router.post("/admin/auth/login",AdminController.login);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);
