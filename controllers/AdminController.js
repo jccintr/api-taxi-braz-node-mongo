@@ -145,7 +145,7 @@ export const store = async (req,res) => {
 export const showPassenger = async (req,res) => {
 
     const passengerId = req.params.id;
-    const passenger = await Passenger.findById(passengerId).select('name email telefone doc ativo');
+    const passenger = await Passenger.findById(passengerId).select('name email telefone doc ativo rating avatar');
            
     return res.status(200).json(passenger);
 

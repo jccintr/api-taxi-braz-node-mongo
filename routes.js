@@ -23,7 +23,9 @@ router.post("/admin/auth/login",AdminController.login);
 router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
 router.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 router.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
+router.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);
 router.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
+router.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenger);
 router.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
