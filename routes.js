@@ -8,6 +8,7 @@ import * as RideController from "./controllers/RideController.js";
 import * as PagamentoController from "./controllers/PagamentoController.js";
 import AuthPassenger from './middleware/AuthPassenger.js';
 import AuthDriver from './middleware/AuthDriver.js';
+import AuthAdmin from './middleware/AuthAdmin.js';
 
 
 
@@ -19,6 +20,11 @@ router.post("/pagamentos",PagamentoController.store);
 // Admin Routes
 //router.post("/admin/auth/register",AdminController.store);
 router.post("/admin/auth/login",AdminController.login);
+router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
+router.get("/admin/drivers",AuthAdmin,AdminController.drivers);
+router.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
+router.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
+router.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);

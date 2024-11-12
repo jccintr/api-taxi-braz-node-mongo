@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import router from './routes.js';
 import websocket from './websocket.js';
+import cors from 'cors';
 
 
 
@@ -15,8 +16,9 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
-
-
+app.use(cors({
+  origin: '*'
+}));
 
 app.get('/', function(req, res) {
     res.send('Bem Vindo a Braz Driver API');
