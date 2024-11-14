@@ -170,7 +170,7 @@ export const showPassenger = async (req,res) => {
 
 export const passengerLogs  = async (req,res) => {
 
-  const logs = await PassengerLog.find().populate('passenger','name').select('data passenger action info').sort({data: 'desc'});
+  const logs = await PassengerLog.find().populate('passenger','name avatar').select('data passenger action info').sort({data: 'desc'});
 
   return res.status(200).json(logs);
 }
