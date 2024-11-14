@@ -3,6 +3,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import Passenger from '../models/passenger.js';
 import Ride from '../models/ride.js';
 import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.js';
+import { addLog } from '../util/logs.js';
 
 
     export const login =  async (req,res) => {
@@ -28,10 +29,9 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
         }
 
         const token = jsonwebtoken.sign({passengerId: passenger._id},process.env.JWT_SECRET);
-       
-
         const { password:p, ...rest } = passenger._doc;
         const ret = {...rest,token};
+        addLog(passenger._id,'Login pela tela Login','');
         return res.status(200).json(ret);
     }
 
@@ -89,7 +89,7 @@ import { sendVerificationEmail,sendResetPasswordEmail } from '../util/sendEmail.
        if (!passenger.ativo) {
         return res.status(404).json({error: 'Usuário não encontrado.'});
       }
-
+       addLog(passenger._id,'Login pela tela Preload','');
        return res.status(200).json(passenger);
     }
 
