@@ -2,6 +2,7 @@ import Ride from '../models/ride.js';
 import Driver from '../models/driver.js';
 import Passenger from '../models/passenger.js';
 import { WebSocket } from 'ws';
+import { addLog } from '../util/logs.js';
 
 
 
@@ -287,7 +288,7 @@ export const price = async (req,res) => {
     // parametros a serem considerados: preco do combustivel, distancia, horario
     // apos x horas, acrescimo de z %
 
-    const {distancia} = req.body;
+    const {distancia,passengerId} = req.body;
 
     //console.log('Distancia: ',distancia);
 
@@ -305,7 +306,7 @@ export const price = async (req,res) => {
    const price = {valor:parseFloat(ridePrice)};
 
   
-
+    addLog(passengerId,'Consultou detalhes de uma corrida','');
     return res.status(200).json(price);
 
 
