@@ -106,7 +106,7 @@ import { addLog } from '../util/logs.js';
        if (!updatedPassenger) {
          return res.status(404).json({error: 'Usuário não encontrado.'});
        }
-
+       addLog(passengerId,'Atualizou o seu dados de perfil','');
        return res.status(200).json(updatedPassenger);
     }
 
@@ -115,7 +115,7 @@ import { addLog } from '../util/logs.js';
         const {passengerId} = req.body;
     
         const rides = await Ride.find({passenger:passengerId}).select('data status origem destino').sort({data: 'desc'});
-           
+        addLog(passengerId,'Acessou histórico de corridas','');  
         return res.status(200).json(rides);
     
     }

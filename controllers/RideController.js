@@ -364,6 +364,7 @@ export const detailPassenger =  async (req,res) => {
         const ride = await Ride.findById(rideId).populate('driver','name avatar rating').populate('pagamento','nome').select('data passenger status origem destino distancia duracao valor veiculo driverRating events');
         if(ride.passenger != passengerId)  throw 'Não autorizado';
         if(!ride) throw 'Corrida não encontrada';
+        addLog(passengerId,'Acessou dados de uma corrida',rideId);
         return res.status(200).json(ride);
     } catch (error) {
         console.log(error);
