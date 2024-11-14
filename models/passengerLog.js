@@ -12,10 +12,14 @@ const passengerLogSchema = new mongoose.Schema({
         required:true
         
     },
-   
     action:{
         type:String,
         required:true
+    },
+    info:{
+        type:String,
+        required:false,
+        default:null
     },
    
     

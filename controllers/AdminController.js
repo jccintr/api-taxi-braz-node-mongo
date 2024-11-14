@@ -3,6 +3,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import Admin from '../models/admin.js';
 import Passenger from '../models/passenger.js';
 import Driver from '../models/driver.js';
+import PassengerLog from '../models/passengerLog.js';
 
 
 export const login =  async (req,res) => {
@@ -165,6 +166,13 @@ export const showPassenger = async (req,res) => {
    }
 
    return res.status(200).json({mensagem:'Passageiro alterado com sucesso.'});
+}
+
+export const passengerLogs  = async (req,res) => {
+
+  const logs = await PassengerLog.find().populate('passenger','name').select('data passenger action info').sort({data: 'desc'});
+
+  return res.status(200).json(logs);
 }
 
   

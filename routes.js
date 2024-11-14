@@ -21,6 +21,7 @@ router.post("/pagamentos",PagamentoController.store);
 //router.post("/admin/auth/register",AdminController.store);
 router.post("/admin/auth/login",AdminController.login);
 router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
+router.get("/admin/logs/passengers",AuthAdmin,AdminController.passengerLogs);
 router.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 router.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
 router.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);
