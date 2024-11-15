@@ -23,6 +23,7 @@ router.post("/pagamentos",PagamentoController.store);
 router.post("/admin/auth/login",AdminController.login);
 router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
 router.get("/admin/passengers/messages",AuthAdmin,PassengerMessageController.index);
+router.put("/admin/passengers/messages/:id",AuthPassenger,PassengerMessageController.setStatus);
 router.delete("/admin/passengers/messages/:id",AuthAdmin,PassengerMessageController.destroy);
 router.get("/admin/logs/passengers",AuthAdmin,PassengerLogController.index);
 router.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController.destroy);
@@ -35,6 +36,7 @@ router.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);
+
 router.post("/passengers/auth/login",PassengerController.login);
 
 router.post("/passengers/auth/email/verify/request",AuthPassenger,PassengerController.sendVerifyEmail);

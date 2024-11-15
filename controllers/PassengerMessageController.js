@@ -24,7 +24,7 @@ export const index  = async (req,res) => {
   export const destroy  = async (req,res) => {
 
      const id = req.params.id;
-    
+      
      try {
         const deleted = await PassengerMessage.findByIdAndDelete(id);
      } catch (error) {
@@ -35,4 +35,18 @@ export const index  = async (req,res) => {
      return res.status(200).json({message:'Excluído com sucesso'});
      
 
+  }
+
+  export const setStatus  = async (req,res) => {
+
+
+   const id = req.params.id;
+   const {lida} = req.body;
+  
+   try {
+      const updatedMessage = await PassengerMessage.findByIdAndUpdate(id,{lida},{new:true});
+   } catch (error) {
+      return res.status(404).json({error: 'Mensagem não encontrada.'});
+   }
+     return res.status(200).json({message:'Status alterado com sucesso'});
   }
