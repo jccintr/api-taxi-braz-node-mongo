@@ -6,6 +6,7 @@ import * as PassengerMessageController from "./controllers/PassengerMessageContr
 import * as DriverController from "./controllers/DriverController.js";
 import * as RideController from "./controllers/RideController.js";
 import * as PagamentoController from "./controllers/PagamentoController.js";
+import * as PassengerLogController from "./controllers/PassengerLogController.js"
 import AuthPassenger from './middleware/AuthPassenger.js';
 import AuthDriver from './middleware/AuthDriver.js';
 import AuthAdmin from './middleware/AuthAdmin.js';
@@ -22,7 +23,9 @@ router.post("/pagamentos",PagamentoController.store);
 router.post("/admin/auth/login",AdminController.login);
 router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
 router.get("/admin/passengers/messages",AuthAdmin,PassengerMessageController.index);
-router.get("/admin/logs/passengers",AuthAdmin,AdminController.passengerLogs);
+router.delete("/admin/passengers/messages/:id",AuthAdmin,PassengerMessageController.destroy);
+router.get("/admin/logs/passengers",AuthAdmin,PassengerLogController.index);
+router.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController.destroy);
 router.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 router.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
 router.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);

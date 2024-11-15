@@ -21,3 +21,18 @@ export const index  = async (req,res) => {
     return res.status(200).json(messages);
   }
   
+  export const destroy  = async (req,res) => {
+
+     const id = req.params.id;
+    
+     try {
+        const deleted = await PassengerMessage.findByIdAndDelete(id);
+     } catch (error) {
+        return res.status(404).json({error: 'Mensagem não encontrada.'});
+     }
+
+     
+     return res.status(200).json({message:'Excluído com sucesso'});
+     
+
+  }
