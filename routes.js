@@ -33,6 +33,8 @@ router.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);
 router.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
 router.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenger);
 router.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
+router.get("/admin/rides",AuthAdmin,AdminController.getAllRides);
+router.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);

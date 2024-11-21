@@ -3,6 +3,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import Admin from '../models/admin.js';
 import Passenger from '../models/passenger.js';
 import Driver from '../models/driver.js';
+import Ride from '../models/ride.js';
 import PassengerLog from '../models/passengerLog.js';
 
 
@@ -166,6 +167,28 @@ export const showPassenger = async (req,res) => {
    }
 
    return res.status(200).json({mensagem:'Passageiro alterado com sucesso.'});
+}
+
+export const getAllRides  = async (req,res) => {
+
+  const rides = await Ride.find({status: 5}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'});
+  
+  //const ridesCancelledByDriver = await Ride.find({status: -2}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'});
+  
+  //const ridesCancelledByPax = await Ride.find({status: 5}).populate('passenger','name avatar').select('data passenger status valor').sort({data: 'desc'});
+  
+  return res.status(200).json(rides);
+}
+
+export const getRideDetail  = async (req,res) => {
+  
+  const rideId = req.params.id;
+
+  const ride = await Ride.findById(rideId).populate('passenger','name avatar rating').populate('driver','name avatar rating').populate('pagamento','nome').select('data driver status origem destino distancia duracao valor valorPlataforma veiculo passengerRating driverRating events');
+      
+
+  return res.status(200).json(ride);
+
 }
 
 
