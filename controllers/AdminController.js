@@ -186,6 +186,12 @@ export const getCancelledRides  = async (req,res) => {
   return res.status(200).json(cancelledRides);
 }
 
+export const getSolicitedRides  = async (req,res) => {
+
+  const solicitedRides = await Ride.find({status: -1}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver valor').sort({data: 'desc'});
+  return res.status(200).json(solicitedRides);
+}
+
 export const getRideDetail  = async (req,res) => {
   
   const rideId = req.params.id;

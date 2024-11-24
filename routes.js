@@ -35,6 +35,7 @@ router.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenger);
 router.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
 router.get("/admin/rides",AuthAdmin,AdminController.getAllRides);
 router.get("/admin/rides/cancelled",AuthAdmin,AdminController.getCancelledRides);
+router.get("/admin/rides/solicited",AuthAdmin,AdminController.getSolicitedRides);
 router.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 // Passenger Routes
 router.post("/passengers/auth/register",PassengerController.store);
