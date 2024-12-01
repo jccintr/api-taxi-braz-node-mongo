@@ -298,7 +298,7 @@ export const price = async (req,res) => {
 
     ridePrice =  ( distancia * parseFloat(process.env.CUSTO_POR_KM) ) + parseFloat(process.env.TAXA_FIXA) + ( distancia * cf );
 
-   console.log(ridePrice);
+ 
     
     if(ridePrice < parseFloat(process.env.VALOR_MINIMO_CORRIDA)) {
 
@@ -307,14 +307,18 @@ export const price = async (req,res) => {
     }
 
     const data = new Date();
+    const hora = data.getHours();
 
-   console.log(data.getHours());
+    if(hora >= parseInt(process.env.HORARIO_LIMITE)){
+        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR);
+    }
    
+
 
    const price = {valor:parseFloat(ridePrice)};
 
   
-    //addLog(passengerId,'Consultou preço de uma corrida','');
+    addLog(passengerId,'Consultou preço de uma corrida','');
     return res.status(200).json(price);
 
 
