@@ -320,7 +320,7 @@ export const price = async (req,res) => {
    const price = {valor:parseFloat(ridePrice)};
 
   
-   // addLog(passengerId,'Consultou preço de uma corrida','');
+   addLog(passengerId,'Consultou preço de uma corrida','');
     return res.status(200).json(price);
 
 
