@@ -288,25 +288,33 @@ export const price = async (req,res) => {
     // parametros a serem considerados: preco do combustivel, distancia, horario
     // apos x horas, acrescimo de z %
 
-    const {distancia,passengerId} = req.body;
+    const {distancia,passengerId} = req.body;  // distancia em km por exemplo: 1.54km ou 0.95km
+    
+    const cf = parseFloat(process.env.PRECO_COMBUSTIVEL) / parseFloat(process.env.AUTONOMIA_POR_LITRO);
 
-    //console.log('Distancia: ',distancia);
 
     let ridePrice = 0;
 
-    ridePrice = distancia * parseFloat(process.env.VALOR_POR_KM);
+
+    ridePrice =  ( distancia * parseFloat(process.env.CUSTO_POR_KM) ) + parseFloat(process.env.TAXA_FIXA) + ( distancia * cf );
+
+   console.log(ridePrice);
     
     if(ridePrice < parseFloat(process.env.VALOR_MINIMO_CORRIDA)) {
 
          ridePrice = process.env.VALOR_MINIMO_CORRIDA;
 
     }
+
+    const data = new Date();
+
+   console.log(data.getHours());
    
 
    const price = {valor:parseFloat(ridePrice)};
 
   
-    addLog(passengerId,'Consultou detalhes de uma corrida','');
+    //addLog(passengerId,'Consultou preço de uma corrida','');
     return res.status(200).json(price);
 
 
