@@ -2,7 +2,12 @@ import express from 'express';
 //import { WebSocketServer,WebSocket } from 'ws';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import router from './routes.js';
+//import router from './routes.js';
+import AdminRouter from './routes/adminRoutes.js';
+import PagamentoRouter from './routes/pagamentoRoutes.js';
+import PassengerRouter from './routes/passengerRoutes.js';
+import DriverRouter from './routes/driverRoutes.js';
+import RideRouter from './routes/rideRoutes.js';
 import websocket from './websocket.js';
 import cors from 'cors';
 
@@ -26,7 +31,12 @@ app.get('/', function(req, res) {
   app.get('/awake', function(req, res) {
     res.send('Hello !');
   });
-  app.use(router);
+  app.use(AdminRouter);
+  app.use(PagamentoRouter);
+  app.use(PassengerRouter);
+  app.use(DriverRouter);
+  app.use(RideRouter);
+  //app.use(router);
 
  
 

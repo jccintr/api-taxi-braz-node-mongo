@@ -13,7 +13,7 @@ import jsonwebtoken from 'jsonwebtoken';
       const token = bearer.split(' ')[1];
 
       try {
-        var decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET);
+        var decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET_ADMIN);
       } catch (error) {
       return res.status(403).json({error:"Não autorizado"});
       }

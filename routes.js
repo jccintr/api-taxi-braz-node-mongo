@@ -16,10 +16,13 @@ import AuthAdmin from './middleware/AuthAdmin.js';
 const router = Router();
 
 //Pagamento Routes
+/*
 router.get("/pagamentos",PagamentoController.index);
 router.post("/pagamentos",PagamentoController.store);
+*/
 // Admin Routes
 //router.post("/admin/auth/register",AdminController.store);
+/*
 router.post("/admin/auth/login",AdminController.login);
 router.get("/admin/passengers",AuthAdmin,AdminController.passengers);
 router.get("/admin/passengers/messages",AuthAdmin,PassengerMessageController.index);
@@ -37,7 +40,11 @@ router.get("/admin/rides",AuthAdmin,AdminController.getAllRides);
 router.get("/admin/rides/cancelled",AuthAdmin,AdminController.getCancelledRides);
 router.get("/admin/rides/solicited",AuthAdmin,AdminController.getSolicitedRides);
 router.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
+*/
+
 // Passenger Routes
+
+/*
 router.post("/passengers/auth/register",PassengerController.store);
 router.post("/passengers/message",AuthPassenger,PassengerMessageController.store);
 
@@ -52,8 +59,10 @@ router.post("/passengers/auth/password/reset",PassengerController.resetPassword)
 router.post("/passengers/auth/token",AuthPassenger,PassengerController.validateToken);
 router.post("/passengers/update",AuthPassenger,PassengerController.update);
 router.get("/passengers/rides",AuthPassenger,PassengerController.passengerRides);
+*/
 
 // Driver routes
+/*
 router.post("/drivers/auth/register",DriverController.store);
 router.post("/drivers/auth/login",DriverController.login);
 router.post("/drivers/auth/token",AuthDriver,DriverController.validateToken);
@@ -68,7 +77,9 @@ router.post("/drivers/update/pix",AuthDriver,DriverController.updatePix);
 router.post("/drivers/update/veiculo",AuthDriver,DriverController.updateVeiculo);
 router.get("/drivers/rides",AuthDriver,DriverController.driverRides);
 router.post("/drivers/ganhos",AuthDriver,DriverController.getGanhos);
+*/
 // Ride routes
+/*
 router.get("/rides",AuthDriver,RideController.index);
 router.get("/rides/:id/status",AuthPassenger,RideController.status);
 router.post("/rides",AuthPassenger,RideController.store);
@@ -86,7 +97,7 @@ router.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassenger)
 router.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
 router.get("/rides/:id/detail/passenger",AuthPassenger,RideController.detailPassenger);
 router.get("/rides/:id/detail/driver",AuthDriver,RideController.detailDriver);
-
+*/
 //router.get("/ws",RideController.teste);
 
 export default router;

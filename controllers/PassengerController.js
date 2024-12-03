@@ -28,7 +28,7 @@ import { addLog } from '../util/logs.js';
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
         }
 
-        const token = jsonwebtoken.sign({passengerId: passenger._id},process.env.JWT_SECRET);
+        const token = jsonwebtoken.sign({passengerId: passenger._id},process.env.JWT_SECRET_PASSENGER);
         const { password:p, ...rest } = passenger._doc;
         const ret = {...rest,token};
         addLog(passenger._id,'Login pela tela Login','');

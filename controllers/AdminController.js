@@ -26,7 +26,7 @@ if(!bcryptjs.compareSync(password,admin.password)){
     return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
     }
 
-    const token = jsonwebtoken.sign({adminId: admin._id},process.env.JWT_SECRET);
+    const token = jsonwebtoken.sign({adminId: admin._id},process.env.JWT_SECRET_ADMIN);
    
 
     const { password:p, ...rest } = admin._doc;
