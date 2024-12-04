@@ -306,17 +306,14 @@ export const price = async (req,res) => {
 
     }
 
-    const data = new Date();//.toLocaleDateString("en-US",{timeZone: "America/Sao_Paulo"});
-    const data2 = new Date().toLocaleDateString("pt-BR",{timeZone: "America/Sao_Paulo"});
-    const data3 = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
-    const hora = data.getHours();
-    console.log('data =>',data);
-    console.log('toLocaleDateString =>',data2);
-    console.log('toLocaleTimeString =>',data3);
+  
+    const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
+    const hora = parseInt(time.split(':')[0]);
+  
     console.log('hora =>',hora);
 
     if(hora >= parseInt(process.env.HORARIO_LIMITE)){
-        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR);
+        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_HORARIO);
     }
    
    if (distancia>=15){
