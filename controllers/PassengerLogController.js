@@ -3,10 +3,21 @@ import PassengerLog from "../models/passengerLog.js";
 
 
 export const index  = async (req,res) => {
-
-    const logs = await PassengerLog.find().populate('passenger','name avatar').select('data passenger action info').sort({data: 'desc'});
   
-    return res.status(200).json(logs);
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await PassengerLog.countDocuments();
+   const pages = Math.ceil(totalDocuments / pageSize);
+
+    const logs = await PassengerLog.find().populate('passenger','name avatar').select('data passenger action info').sort({data: 'desc'}).skip(skip).limit(pageSize);
+  
+    return res.status(200).json({
+      status:"success",
+      pages: pages,
+      data: logs
+    });
+
   }
 
   export const destroy  = async (req,res) => {

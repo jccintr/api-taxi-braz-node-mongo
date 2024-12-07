@@ -15,7 +15,7 @@ AdminRouter.get("/admin/passengers",AuthAdmin,AdminController.passengers);
 AdminRouter.get("/admin/passengers/messages",AuthAdmin,PassengerMessageController.index);
 AdminRouter.put("/admin/passengers/messages/:id",AuthAdmin,PassengerMessageController.setStatus);
 AdminRouter.delete("/admin/passengers/messages/:id",AuthAdmin,PassengerMessageController.destroy);
-AdminRouter.get("/admin/logs/passengers",AuthAdmin,PassengerLogController.index);
+AdminRouter.get("/admin/logs/passengers?",AuthAdmin,PassengerLogController.index);
 AdminRouter.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController.destroy);
 AdminRouter.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 AdminRouter.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
