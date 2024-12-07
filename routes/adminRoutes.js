@@ -23,9 +23,9 @@ AdminRouter.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger)
 AdminRouter.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
 AdminRouter.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenger);
 AdminRouter.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
-AdminRouter.get("/admin/rides",AuthAdmin,AdminController.getAllRides);
-AdminRouter.get("/admin/rides/cancelled",AuthAdmin,AdminController.getCancelledRides);
-AdminRouter.get("/admin/rides/solicited",AuthAdmin,AdminController.getSolicitedRides);
+AdminRouter.get("/admin/rides?",AuthAdmin,AdminController.getAllRides);
+AdminRouter.get("/admin/rides/cancelled?",AuthAdmin,AdminController.getCancelledRides);
+AdminRouter.get("/admin/rides/solicited?",AuthAdmin,AdminController.getSolicitedRides);
 AdminRouter.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 
 export default AdminRouter;

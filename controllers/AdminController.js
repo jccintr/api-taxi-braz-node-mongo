@@ -170,26 +170,52 @@ export const showPassenger = async (req,res) => {
 }
 
 export const getAllRides  = async (req,res) => {
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await Ride.countDocuments({status: 5});
+   const pages = Math.ceil(totalDocuments / pageSize);
 
-  const rides = await Ride.find({status: 5}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'});
-  
-  //const ridesCancelledByDriver = await Ride.find({status: -2}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'});
-  
-  //const ridesCancelledByPax = await Ride.find({status: 5}).populate('passenger','name avatar').select('data passenger status valor').sort({data: 'desc'});
-  
-  return res.status(200).json(rides);
+
+  const rides = await Ride.find({status: 5}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+    
+  return res.status(200).json({
+    pages: pages,
+    data: rides
+  });
+
 }
 
 export const getCancelledRides  = async (req,res) => {
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await Ride.countDocuments({status: -2});
+   const pages = Math.ceil(totalDocuments / pageSize);
 
-  const cancelledRides = await Ride.find({status: -2}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver valor').sort({data: 'desc'});
-  return res.status(200).json(cancelledRides);
+  const cancelledRides = await Ride.find({status: -2}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+  
+  return res.status(200).json({
+    pages: pages,
+    data: cancelledRides
+  });
+
 }
 
 export const getSolicitedRides  = async (req,res) => {
+  const page = req.query.page * 1 || 1;
+  const pageSize = 10;
+  const skip = ( page - 1 ) * pageSize;
+  const totalDocuments = await Ride.countDocuments({status: -1});
+  const pages = Math.ceil(totalDocuments / pageSize);
 
-  const solicitedRides = await Ride.find({status: -1}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver valor').sort({data: 'desc'});
-  return res.status(200).json(solicitedRides);
+  const solicitedRides = await Ride.find({status: -1}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+  
+  return res.status(200).json({
+    pages: pages,
+    data: solicitedRides
+  });
+
 }
 
 export const getRideDetail  = async (req,res) => {
