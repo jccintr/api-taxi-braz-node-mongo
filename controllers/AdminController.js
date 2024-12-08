@@ -105,7 +105,7 @@ export const store = async (req,res) => {
 
   export const passengers = async (req,res) => {
 
-    const passengers = await Passenger.find().select('name avatar rating').sort({name: 'asc'});
+    const passengers = await Passenger.find().select('name avatar rating email telefone').sort({name: 'asc'});
            
     return res.status(200).json(passengers);
 
