@@ -28,7 +28,7 @@ wss.on('connection', (ws, req) => {
   //  } catch (error) {
     
   //  }
-   const decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET);
+   const decoded = jsonwebtoken.verify(token,process.env.JWT_SECRET_PASSENGER);
    ws.id = decoded.passengerId;
 
   
