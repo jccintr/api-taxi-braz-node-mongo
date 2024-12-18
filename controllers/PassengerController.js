@@ -58,7 +58,7 @@ import { addLog } from '../util/logs.js';
             return res.status(400).json({error: 'Email já cadastrado.'});
         }
         // para bloquear novos cadastros
-        return res.status(400).json({error: 'Campos obrigatórios não informados.'});
+        //return res.status(400).json({error: 'Campos obrigatórios não informados.'});
 
         const salt = bcryptjs.genSaltSync(10);
         const password_hash = bcryptjs.hashSync(password,salt);
