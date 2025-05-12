@@ -409,3 +409,39 @@ export const detailDriver =  async (req,res) => {
     
 }
 
+export const driverMessage = async (req,res) => {
+    const rideId = req.params.id;
+    const {message} = req.body;
+
+     const ride = await Ride.findById(rideId);
+
+     if(!ride){
+         return res.status(404).json({erro:'Corrida não encontrada'});
+     }
+     if(!message || message.trim().length==0){
+          return res.status(422).json({erro:'Mensagem inválida'});
+     }
+
+    ride.messages.push({sentAt: new Date(),sender:"Driver",message: message});
+    await ride.save();
+     return res.status(201).json({erro:'Mensagem enviada com sucesso.'});
+
+}
+
+export const passengerMessage = async (req,res) => {
+    const rideId = req.params.id;
+    const {message} = req.body
+
+    const ride = await Ride.findById(rideId);
+
+     if(!ride){
+         return res.status(404).json({erro:'Corrida não encontrada'});
+     }
+     if(!message || message.trim().length==0){
+          return res.status(422).json({erro:'Mensagem inválida'});
+     }
+    ride.messages.push({sentAt: new Date(),sender:"Passenger",message: message});
+    await ride.save();
+     return res.status(201).json({erro:'Mensagem enviada com sucesso.'});
+}
+

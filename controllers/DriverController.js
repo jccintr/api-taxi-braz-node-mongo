@@ -79,11 +79,8 @@ export const setStatus =  async (req,res) => {
 }
 
 export const updateLocation =  async (req,res) => {
-
-   
-    const {driverId,position} = req.body;
- 
-
+  
+  const {driverId,position} = req.body;
   const updatedLocation = await Driver.findByIdAndUpdate(driverId,{position,online:true});
        
   if(!updatedLocation){
@@ -91,8 +88,9 @@ export const updateLocation =  async (req,res) => {
   } else {
 
     const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').populate('pagamento','nome').select('data distancia duracao valor origem destino');
+ 
     return res.status(200).json(rides);
-    //  return res.status(200).json({message:"Location updated"});
+ 
   }
 
 }

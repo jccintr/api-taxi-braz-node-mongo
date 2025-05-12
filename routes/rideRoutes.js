@@ -23,6 +23,8 @@ RideRouter.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassen
 RideRouter.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
 RideRouter.get("/rides/:id/detail/passenger",AuthPassenger,RideController.detailPassenger);
 RideRouter.get("/rides/:id/detail/driver",AuthDriver,RideController.detailDriver);
+RideRouter.post("/rides/:id/driver/message",AuthDriver,RideController.driverMessage);
+RideRouter.post("/rides/:id/passenger/message",AuthPassenger,RideController.passengerMessage);
 
 
 export default RideRouter;

@@ -70,14 +70,17 @@ const rideSchema = new mongoose.Schema({
         },
     events:[
         {
-        data:{
-           type:Date,          
-        },
-        descricao:{
-            type:String,          
-        }       
-    }
-]
+            data:{ type:Date,},
+            descricao:{type:String,}       
+        }
+    ],
+    messages:[
+        {
+            sentAt:{type: Date,},
+            sender:{type: String,},
+            message:{type: String,}
+        }
+    ]
    
    
 },{timestamps: true});
