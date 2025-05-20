@@ -409,15 +409,24 @@ export const detailDriver =  async (req,res) => {
     
 }
 
-export const driverMessage = async (req,res) => {
+export const saveDriverMessage = async (req,res) => {
     const rideId = req.params.id;
-    const {message} = req.body;
+    const {message,driverId} = req.body;
 
      const ride = await Ride.findById(rideId);
-
+   
      if(!ride){
          return res.status(404).json({erro:'Corrida não encontrada'});
      }
+
+     if(ride.status < 1 || ride.status > 3){
+         return res.status(400).json({erro:'Corrida não pode receber mensagens.'});
+     }
+          
+     if(ride.driver._id.toString() !== driverId){
+         return res.status(403).json({erro:'Acesso negado.'});
+     }
+
      if(!message || message.trim().length==0){
           return res.status(422).json({erro:'Mensagem inválida'});
      }
@@ -428,15 +437,24 @@ export const driverMessage = async (req,res) => {
 
 }
 
-export const passengerMessage = async (req,res) => {
+export const savePassengerMessage = async (req,res) => {
     const rideId = req.params.id;
-    const {message} = req.body
+    const {message,passengerId} = req.body
 
     const ride = await Ride.findById(rideId);
 
      if(!ride){
          return res.status(404).json({erro:'Corrida não encontrada'});
      }
+
+     if(ride.status < 1 || ride.status > 3){
+         return res.status(400).json({erro:'Corrida não pode receber mensagens.'});
+     }
+
+      if(ride.passenger._id.toString() !== passengerId){
+         return res.status(403).json({erro:'Acesso negado.'});
+     }
+
      if(!message || message.trim().length==0){
           return res.status(422).json({erro:'Mensagem inválida'});
      }
@@ -445,3 +463,39 @@ export const passengerMessage = async (req,res) => {
      return res.status(201).json({erro:'Mensagem enviada com sucesso.'});
 }
 
+export const getRideMessagesDriver = async (req,res) => {
+     const rideId = req.params.id;
+     const {driverId} = req.body
+
+     const ride = await Ride.findById(rideId);
+
+    
+    if(!ride){
+         return res.status(404).json({erro:'Corrida não encontrada'});
+     }
+
+     if(ride.driver._id.toString() !== driverId){
+         return res.status(403).json({erro:'Acesso negado.'});
+     }
+
+     const messages = ride.messages;
+     return res.status(200).json(messages);
+}
+
+export const getRideMessagesPassenger = async (req,res) => {
+     const rideId = req.params.id;
+     const {passengerId} = req.body
+     
+     const ride = await Ride.findById(rideId);
+
+    if(!ride){
+         return res.status(404).json({erro:'Corrida não encontrada'});
+     }
+
+     if(ride.passenger._id.toString() !== passengerId){
+         return res.status(403).json({erro:'Acesso negado.'});
+     }
+
+     const messages = ride.messages;
+     return res.status(200).json(messages);
+}

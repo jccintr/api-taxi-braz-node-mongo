@@ -23,8 +23,9 @@ RideRouter.post("/rides/:id/rate/passenger",AuthDriver,RideController.ratePassen
 RideRouter.post("/rides/:id/rate/driver",AuthPassenger,RideController.rateDriver);
 RideRouter.get("/rides/:id/detail/passenger",AuthPassenger,RideController.detailPassenger);
 RideRouter.get("/rides/:id/detail/driver",AuthDriver,RideController.detailDriver);
-RideRouter.post("/rides/:id/driver/message",AuthDriver,RideController.driverMessage);
-RideRouter.post("/rides/:id/passenger/message",AuthPassenger,RideController.passengerMessage);
-
+RideRouter.post("/rides/:id/driver/message",AuthDriver,RideController.saveDriverMessage);
+RideRouter.post("/rides/:id/passenger/message",AuthPassenger,RideController.savePassengerMessage);
+RideRouter.get("/rides/:id/messages/driver",AuthDriver,RideController.getRideMessagesDriver);
+RideRouter.get("/rides/:id/messages/passenger",AuthPassenger,RideController.getRideMessagesPassenger);
 
 export default RideRouter;
