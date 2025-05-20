@@ -39,7 +39,7 @@ export const store = async (req,res) => {
         body: JSON.stringify({to:toDrivers,sound,title,body})
     });
 
-    const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events');
+    const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
     return res.status(201).json(retRide);
 
 }
@@ -63,7 +63,7 @@ export const accept = async (req,res) => {
     ride.events.push({data: new Date(),descricao: "Corrida aceita"});
     await ride.save();
 
-     const acceptedRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+     const acceptedRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
      const wss = req.app.get("wss");
       wss.clients.forEach((client) => {
@@ -89,7 +89,7 @@ export const onWay = async (req,res) => {
     ride.events.push({data: new Date(),descricao: "Motorista a Caminho"});
     await ride.save();
 
-    const onWayRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const onWayRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
     const wss = req.app.get("wss");
      wss.clients.forEach((client) => {
@@ -113,7 +113,7 @@ export const arrived = async (req,res) => {
     ride.events.push({data: new Date(),descricao: "Motorista chegou"});
     await ride.save();
 
-    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
     const wss = req.app.get("wss");
      wss.clients.forEach((client) => {
@@ -140,7 +140,7 @@ export const start = async (req,res) => {
     ride.events.push({data: new Date(),descricao: "Corrida iniciada"});
     await ride.save();
 
-    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
     const wss = req.app.get("wss");
      wss.clients.forEach((client) => {
@@ -158,7 +158,7 @@ export const start = async (req,res) => {
 export const restoreDriverRide = async (req,res) => {
     const rideId = req.params.id;
 
-    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
     if(!ride){
         return res.status(404).json({error:'Corrida não encontrada.'});
@@ -174,7 +174,7 @@ export const restorePassengerRide = async (req,res) => {
 
     const rideId = req.params.id;
    // console.log('restore passenger rideId =>',rideId);
-    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const ride = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
     
 
     if(!ride){
@@ -201,7 +201,7 @@ export const finish = async (req,res) => {
     ride.valorDriver = ride.valor - ride.valorPlataforma;
     await ride.save();
 
-    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').populate('pagamento','nome').select('status data distancia duracao valor origem destino events veiculo');
+    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
     const wss = req.app.get("wss");
      wss.clients.forEach((client) => {
@@ -461,7 +461,8 @@ export const savePassengerMessage = async (req,res) => {
      }
     ride.messages.push({sentAt: new Date(),sender:"Passenger",message: message});
     await ride.save();
-     return res.status(201).json({erro:'Mensagem enviada com sucesso.'});
+    const messages = ride.messages;
+    return res.status(201).json(messages);
 }
 
 export const getRideMessagesDriver = async (req,res) => {
