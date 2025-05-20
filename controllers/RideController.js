@@ -433,7 +433,8 @@ export const saveDriverMessage = async (req,res) => {
 
     ride.messages.push({sentAt: new Date(),sender:"Driver",message: message});
     await ride.save();
-     return res.status(201).json({erro:'Mensagem enviada com sucesso.'});
+    const messages = ride.messages;
+    return res.status(201).json(messages);
 
 }
 
