@@ -11,7 +11,7 @@ export const store = async (req,res) => {
     
     const {passengerId,origem,destino,duracao,distancia,valor,pagamentoId} = req.body;
     
-    //const event = {Data: Date.now,Description: "Corrida solicitada"};
+    
     const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamentoId});
     newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
@@ -442,7 +442,7 @@ export const savePassengerMessage = async (req,res) => {
     const rideId = req.params.id;
     const {message,passengerId} = req.body
 
-    const ride = await Ride.findById(rideId);
+    const ride = await Ride.findById(rideId).populate('passenger','name').populate('driver','pushToken');
 
      if(!ride){
          return res.status(404).json({erro:'Corrida não encontrada'});
@@ -462,6 +462,29 @@ export const savePassengerMessage = async (req,res) => {
     ride.messages.push({sentAt: new Date(),sender:"Passenger",message: message});
     await ride.save();
     const messages = ride.messages;
+    // envia a notificação de nova mensagem para o motorista da corrida
+   
+    const toDrivers = [];
+    toDrivers.push(ride.driver.pushToken);
+    const sound = 'default';
+    const title = `Nova mensagem de ${ride.passenger.name}`;
+    const body = message;
+    const type = 'chat';
+    const data = {type:'chat',messages};
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({to:toDrivers,sound,title,body,data})
+    });
+
+    // fim do envio da notificação
+
+
+
+    
     return res.status(201).json(messages);
 }
 
