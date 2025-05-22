@@ -65,11 +65,13 @@ export const accept = async (req,res) => {
 
      const acceptedRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone').populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages veiculo');
 
+
+
      const wss = req.app.get("wss");
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
             if(client.id==ride.passenger._id){
-                client.send(JSON.stringify(acceptedRide));
+                client.send(JSON.stringify({ride:acceptedRide}));
             }
         }
       });
@@ -95,7 +97,7 @@ export const onWay = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify(onWayRide));
+               client.send(JSON.stringify({ride:onWayRide}));
            }
        }
      });
@@ -119,7 +121,7 @@ export const arrived = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify(newRide));
+               client.send(JSON.stringify({ride:newRide}));
            }
        }
      });
@@ -146,7 +148,7 @@ export const start = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify(newRide));
+               client.send(JSON.stringify({ride:newRide}));
            }
        }
      });
@@ -207,7 +209,7 @@ export const finish = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify(newRide));
+               client.send(JSON.stringify({ride:newRide}));
            }
        }
      });
@@ -263,7 +265,7 @@ export const driverCancel = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify(newRide));
+               client.send(JSON.stringify({ride:newRide}));
            }
        }
      });
@@ -467,7 +469,7 @@ export const savePassengerMessage = async (req,res) => {
     const toDrivers = [];
     toDrivers.push(ride.driver.pushToken);
     const sound = 'default';
-    const title = `Nova mensagem de ${ride.passenger.name}`;
+    const title = `Mensagem de ${ride.passenger.name}`;
     const body = message;
     const type = 'chat';
     const data = {type:'chat',messages};
