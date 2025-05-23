@@ -71,7 +71,7 @@ export const accept = async (req,res) => {
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
             if(client.id==ride.passenger._id){
-                client.send(JSON.stringify({ride:acceptedRide}));
+                client.send(JSON.stringify({origin:'ride',ride:acceptedRide}));
             }
         }
       });
@@ -97,7 +97,7 @@ export const onWay = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:onWayRide}));
+               client.send(JSON.stringify({origin:'ride',ride:onWayRide}));
            }
        }
      });
@@ -121,7 +121,7 @@ export const arrived = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:newRide}));
+               client.send(JSON.stringify({origin:'ride',ride:newRide}));
            }
        }
      });
@@ -148,7 +148,7 @@ export const start = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:newRide}));
+               client.send(JSON.stringify({origin:'ride',ride:newRide}));
            }
        }
      });
@@ -209,7 +209,7 @@ export const finish = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:newRide}));
+               client.send(JSON.stringify({origin:'ride',ride:newRide}));
            }
        }
      });
@@ -259,13 +259,13 @@ export const driverCancel = async (req,res) => {
     ride.motivoCancelamento = motivo;
     await ride.save();
 
-    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').select('status data distancia duracao valor origem destino pagamento events veiculo');
+    const newRide = await Ride.findById(rideId).populate('passenger','name avatar rating telefone').populate('driver','name avatar rating telefone pix').select('status data distancia duracao valor origem destino pagamento events messages veiculo');
 
     const wss = req.app.get("wss");
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:newRide}));
+               client.send(JSON.stringify({ride:newRide,newMessage:false}));
            }
        }
      });
@@ -436,6 +436,18 @@ export const saveDriverMessage = async (req,res) => {
     ride.messages.push({sentAt: new Date(),sender:"Driver",message: message});
     await ride.save();
     const messages = ride.messages;
+
+    // envia a mensagem via ws para o passenger
+     const wss = req.app.get("wss");
+     wss.clients.forEach((client) => {
+       if (client.readyState === WebSocket.OPEN) {
+           if(client.id==ride.passenger._id){
+               client.send(JSON.stringify({origin:'chat',messages}));
+           }
+       }
+     });
+    // fim do envio de mensagem
+
     return res.status(201).json(messages);
 
 }
@@ -464,8 +476,8 @@ export const savePassengerMessage = async (req,res) => {
     ride.messages.push({sentAt: new Date(),sender:"Passenger",message: message});
     await ride.save();
     const messages = ride.messages;
+
     // envia a notificação de nova mensagem para o motorista da corrida
-   
     const toDrivers = [];
     toDrivers.push(ride.driver.pushToken);
     const sound = 'default';
@@ -481,7 +493,6 @@ export const savePassengerMessage = async (req,res) => {
         },
         body: JSON.stringify({to:toDrivers,sound,title,body,data})
     });
-
     // fim do envio da notificação
 
 
