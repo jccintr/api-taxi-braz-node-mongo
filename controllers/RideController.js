@@ -265,7 +265,7 @@ export const driverCancel = async (req,res) => {
      wss.clients.forEach((client) => {
        if (client.readyState === WebSocket.OPEN) {
            if(client.id==ride.passenger._id){
-               client.send(JSON.stringify({ride:newRide,newMessage:false}));
+               client.send(JSON.stringify({origin:'ride',ride:newRide}));
            }
        }
      });
