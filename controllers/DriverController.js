@@ -282,6 +282,65 @@ export const getGanhos =  async (req,res) => {
     return res.status(200).json({hoje,semana,mes});
 }
 
+export const getGanhos2 = async (req, res) => {
+  try {
+    const { driverId } = req.body;
+    const dtHoje = new Date();
+
+    // Formatar a data com dois dígitos para mês e dia
+    const day = String(dtHoje.getDate()).padStart(2, '0');
+    const month = String(dtHoje.getMonth() + 1).padStart(2, '0'); // +1 porque meses começam em 0
+    const year = dtHoje.getFullYear();
+
+    // Criar objetos Date diretamente
+    const strStart = `${year}-${month}-${day}T00:00:00.000Z`;
+    const strEnd =  `${year}-${month}-${day}T23:59:59.999Z`;
+    const startOfDay = new Date(strStart);
+    const endOfDay = new Date(strEnd);
+
+    // Consultar corridas do dia
+    const todayRides = await Ride.find({
+      driver: driverId,
+      status: 5,
+      data: { $gte: startOfDay, $lte: endOfDay },
+    }).select('data valorDriver');
+    const todayTotal = todayRides.reduce((n, { valorDriver }) => n + valorDriver, 0);
+
+    // Obter a última segunda-feira
+    const lastMonday = getMonday(dtHoje);
+    const startOfWeek = new Date(lastMonday.getFullYear(), lastMonday.getMonth(), lastMonday.getDate(), 0, 0, 0);
+
+    // Consultar corridas da semana
+    const weekRides = await Ride.find({
+      driver: driverId,
+      status: 5,
+      data: { $gte: startOfWeek, $lte: endOfDay },
+    }).select('data valorDriver');
+    const totalWeek = weekRides.reduce((n, { valorDriver }) => n + valorDriver, 0);
+
+    // Primeiro dia do mês
+    const startOfMonth = new Date(year, dtHoje.getMonth(), 1, 0, 0, 0);
+
+    // Consultar corridas do mês
+    const monthRides = await Ride.find({
+      driver: driverId,
+      status: 5,
+      data: { $gte: startOfMonth, $lte: endOfDay },
+    }).select('data valorDriver');
+    const totalMonth = monthRides.reduce((n, { valorDriver }) => n + valorDriver, 0);
+
+    // Retornar resultados
+    const hoje = { valor: todayTotal, corridas: todayRides.length };
+    const semana = { valor: totalWeek, corridas: weekRides.length };
+    const mes2 = { valor: totalMonth, corridas: monthRides.length };
+
+    return res.status(200).json({ hoje, semana, mes2 });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erro ao buscar ganhos', error });
+  }
+};
+
 
 function getMonday(d) {
 

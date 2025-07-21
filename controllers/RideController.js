@@ -291,24 +291,13 @@ export const price = async (req,res) => {
     // apos x horas, acrescimo de z %
 
     const {distancia,passengerId} = req.body;  // distancia em km por exemplo: 1.54km ou 0.95km
-    
     const cf = parseFloat(process.env.PRECO_COMBUSTIVEL) / parseFloat(process.env.AUTONOMIA_POR_LITRO);
-
-
     let ridePrice = 0;
-
-
     ridePrice =  ( distancia * parseFloat(process.env.CUSTO_POR_KM) ) + parseFloat(process.env.TAXA_FIXA) + ( distancia * cf );
-
- 
-    
     if(ridePrice < parseFloat(process.env.VALOR_MINIMO_CORRIDA)) {
-
          ridePrice = process.env.VALOR_MINIMO_CORRIDA;
-
     }
 
-  
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
   
@@ -317,19 +306,15 @@ export const price = async (req,res) => {
     if(hora >= parseInt(process.env.HORARIO_LIMITE)){
         ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_HORARIO);
     }
-   
+ 
    if (distancia>=15){
        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_KM);
-   }
+    }
 
    const price = {valor:parseFloat(ridePrice)};
-
   
-   addLog(passengerId,'Consultou preço de uma corrida','');
+    addLog(passengerId,'Consultou preço de uma corrida','');
     return res.status(200).json(price);
-
-
-
 }
 
 export const index =  async (req,res) => {

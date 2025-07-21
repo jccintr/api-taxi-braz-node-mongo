@@ -17,7 +17,8 @@ DriverRouter.post("/drivers/update",AuthDriver,DriverController.update);
 DriverRouter.post("/drivers/update/pix",AuthDriver,DriverController.updatePix);
 DriverRouter.post("/drivers/update/veiculo",AuthDriver,DriverController.updateVeiculo);
 DriverRouter.get("/drivers/rides",AuthDriver,DriverController.driverRides);
-DriverRouter.post("/drivers/ganhos",AuthDriver,DriverController.getGanhos);
+//DriverRouter.post("/drivers/ganhos",AuthDriver,DriverController.getGanhos);
+DriverRouter.get("/drivers/ganhos",AuthDriver,DriverController.getGanhos2);
 
 
 
