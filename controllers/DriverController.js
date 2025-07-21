@@ -332,9 +332,9 @@ export const getGanhos2 = async (req, res) => {
     // Retornar resultados
     const hoje = { valor: todayTotal, corridas: todayRides.length };
     const semana = { valor: totalWeek, corridas: weekRides.length };
-    const mes2 = { valor: totalMonth, corridas: monthRides.length };
+    const mes = { valor: totalMonth, corridas: monthRides.length };
 
-    return res.status(200).json({ hoje, semana, mes2 });
+    return res.status(200).json({ hoje, semana, mes });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Erro ao buscar ganhos', error });
