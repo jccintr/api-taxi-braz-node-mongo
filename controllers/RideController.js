@@ -313,7 +313,7 @@ export const price = async (req,res) => {
 
    const price = {valor:parseFloat(ridePrice)};
   
-    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+price.toFixed(2));
+    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+ridePrice.toFixed(2));
     return res.status(200).json(price);
 }
 
