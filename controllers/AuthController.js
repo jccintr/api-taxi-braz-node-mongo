@@ -1,6 +1,8 @@
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import User from '../models/user.js';
+import { addLog } from '../util/logs.js';
+
 
 
     export const login =  async (req,res) => {
@@ -40,7 +42,9 @@ import User from '../models/user.js';
             return res.status(400).json({error: 'Campos obrigatórios não informados.'});
         }
 
-        const validateEmailRegex = /^\S+@\S+\.\S+$/;
+  
+        const validateEmailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
         if(!validateEmailRegex.test(email)){
             return res.status(400).json({error: 'Email inválido.'});
         }
@@ -57,6 +61,7 @@ import User from '../models/user.js';
         const newUser = new User({name,email,password:password_hash,telefone,doc});
         await newUser.save();
         const { password:p, ...rest } = newUser._doc;
+        addLog(newUser._id,"Novo Cadastro",newUser.name);
         return res.status(201).json(rest);
        
 
