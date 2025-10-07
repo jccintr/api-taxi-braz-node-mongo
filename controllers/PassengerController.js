@@ -70,6 +70,7 @@ import { addLog } from '../util/logs.js';
         sendVerificationEmail(newPassenger.email,emailVerificationCode);
        
         // const { password:p, ...rest } = newPassenger._doc;
+        addLog(newPassenger._id,"Novo Cadastro",newPassenger.name);
         return res.status(201).json({mensagem:'Conta criada com sucesso.'});
        
 
