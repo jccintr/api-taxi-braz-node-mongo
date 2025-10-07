@@ -1,7 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import User from '../models/user.js';
-import { addLog } from '../util/logs.js';
+//import { addLog } from '../util/logs.js';
 
 
 
@@ -61,7 +61,7 @@ import { addLog } from '../util/logs.js';
         const newUser = new User({name,email,password:password_hash,telefone,doc});
         await newUser.save();
         const { password:p, ...rest } = newUser._doc;
-        addLog(newUser._id,"Novo Cadastro",newUser.name);
+       // addLog(newUser._id,"Novo Cadastro",newUser.name);
         return res.status(201).json(rest);
        
 
