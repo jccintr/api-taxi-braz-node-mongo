@@ -95,7 +95,7 @@ const updateDriversPosition = () => {
         console.error(error);
       }
     }
-  }, 120000);
+  }, 480000);
 };
 
 updateDriversPosition();
