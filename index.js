@@ -10,8 +10,9 @@ import DriverRouter from './routes/driverRoutes.js';
 import RideRouter from './routes/rideRoutes.js';
 import websocket from './websocket.js';
 import cors from 'cors';
-
-
+import { coordinates } from './data/coordinates.js';
+import { driversIds } from './data/coordinates.js';
+import Driver from './models/driver.js';
 
 
 
@@ -74,6 +75,30 @@ const keepAwake = () => {
 };
 
 keepAwake();
+
+
+const updateDriversPosition = () => {
+  setInterval(async () => {
+    for (const driverId of driversIds) {
+
+      const randomIndex = Math.floor(Math.random() * coordinates.length);
+      const position = coordinates[randomIndex];
+
+      try {
+        const updatedLocation = await Driver.findByIdAndUpdate(driverId, { position });
+        if (updatedLocation) {
+          console.log('atualizado drivers positions');
+        } else {
+          console.log('falha ao atualizar')
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }, 120000);
+};
+
+updateDriversPosition();
 
 
 
