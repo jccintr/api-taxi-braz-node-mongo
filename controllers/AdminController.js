@@ -229,6 +229,137 @@ export const getRideDetail  = async (req,res) => {
 
 }
 
+export const getDashboardData  = async (req,res) => {
+
+  const registeredPassengers = await Passenger.countDocuments();
+  const registeredDrivers = await Driver.countDocuments();
+  const driversOnline = await Driver.countDocuments({online:true});
+  const solicitedRides = await Ride.countDocuments({status: -1});
+  const cancelledRides = await Ride.countDocuments({status: -2});
+  const completedRides = await Ride.countDocuments({status: 5});
+
+  
+  const completedRidesPerDayTotalValue = await valorTotalCorridasPorDia();
+  const completedRidesPerWeekTotalValue = await valorTotalCorridasPorSemana();
+   const completedRidesPerMonthTotalValue = await valorTotalCorridasPorMes();
+
+
+
+  const dashboard = {
+    registeredPassengers,
+    registeredDrivers,
+    driversOnline,
+    solicitedRides,
+    cancelledRides,
+    completedRides,
+    completedRidesPerDayTotalValue,
+    completedRidesPerWeekTotalValue,
+    completedRidesPerMonthTotalValue
+  };
+
+  return res.status(200).json(dashboard);
+
+}
+
+
+
+async function valorTotalCorridasPorDia() {
+  // Define o início do dia atual (00:00:00) no fuso local (-03)
+  const inicioDoDia = new Date();
+  inicioDoDia.setHours(0, 0, 0, 0);
+
+  // Define o fim do dia atual (23:59:59.999)
+  const fimDoDia = new Date();
+  fimDoDia.setHours(23, 59, 59, 999);
+
+  const resultado = await Ride.aggregate([
+    {
+      $match: {
+        data: { $gte: inicioDoDia, $lt: fimDoDia },
+        status: 5  // corridas concluidas
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalValor: { $sum: "$valor" }
+      }
+    }
+  ]);
+
+  const total = resultado.length > 0 ? resultado[0].totalValor : 0;
+
+  return total;
+}
+
+async function valorTotalCorridasPorSemana() {
+  const hoje = new Date();
+
+  // Garante que estamos no fuso horário local (Brasil -03)
+  const diaDaSemana = hoje.getDay(); // 0 = domingo, 1 = segunda, ..., 6 = sábado
+  const diffParaSegunda = diaDaSemana === 0 ? -6 : 1 - diaDaSemana; // Se for domingo, volta 6 dias
+
+  // Início da semana: segunda-feira 00:00:00
+  const inicioSemana = new Date(hoje);
+  inicioSemana.setDate(hoje.getDate() + diffParaSegunda);
+  inicioSemana.setHours(0, 0, 0, 0);
+
+  // Fim da semana: domingo 23:59:59.999
+  const fimSemana = new Date(inicioSemana);
+  fimSemana.setDate(inicioSemana.getDate() + 6);
+  fimSemana.setHours(23, 59, 59, 999);
+
+  const resultado = await Ride.aggregate([
+    {
+      $match: {
+        data: { $gte: inicioSemana, $lte: fimSemana }, // inclui o domingo
+        status: 5
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalValor: { $sum: "$valor" }
+      }
+    }
+  ]);
+
+  const total = resultado.length > 0 ? resultado[0].totalValor : 0;
+  
+  return total;
+}
+
+async function valorTotalCorridasPorMes() {
+  const hoje = new Date();
+
+  // Início do mês atual: dia 1 às 00:00:00
+  const inicioMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+  inicioMes.setHours(0, 0, 0, 0);
+
+  // Fim do mês atual: último dia do mês às 23:59:59.999
+  const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0); // dia 0 = último do mês anterior
+  fimMes.setHours(23, 59, 59, 999);
+
+  const resultado = await Ride.aggregate([
+    {
+      $match: {
+        data: { $gte: inicioMes, $lte: fimMes },
+        status: 5
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalValor: { $sum: "$valor" }
+      }
+    }
+  ]);
+
+  const total = resultado.length > 0 ? resultado[0].totalValor : 0;
+ 
+  return total;
+}
+
 
 
   
