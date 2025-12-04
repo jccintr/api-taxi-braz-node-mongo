@@ -301,19 +301,20 @@ export const price = async (req,res) => {
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
   
-    console.log('hora =>',hora);
+   // console.log('hora =>',hora);
 
+    
     if(hora >= parseInt(process.env.HORARIO_LIMITE)){
         ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_HORARIO);
     }
- 
+   
    if (distancia>=15){
        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_KM);
     }
 
    const price = {valor:parseFloat(ridePrice)};
-  
-    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+ridePrice.toFixed(2));
+    //console.log(ridePrice);
+    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
 }
 
