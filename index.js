@@ -76,7 +76,7 @@ const keepAwake = () => {
 
 keepAwake();
 
-
+/*
 const updateDriversPosition = () => {
   setInterval(async () => {
     for (const driverId of driversIds) {
@@ -99,7 +99,7 @@ const updateDriversPosition = () => {
 };
 
 updateDriversPosition();
-
+*/
 
 
 
