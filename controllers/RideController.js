@@ -306,7 +306,11 @@ export const price = async (req,res) => {
     
     if(hora >= parseInt(process.env.HORARIO_LIMITE)){
         ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_HORARIO);
+    } else if (hora < 7){
+        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_MADRUGADA);
     }
+
+   
    
    if (distancia>=15){
        ridePrice = ridePrice * parseFloat(process.env.MULTIPLICADOR_KM);
