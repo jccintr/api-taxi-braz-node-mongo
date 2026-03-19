@@ -321,7 +321,7 @@ export const price = async (req,res) => {
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
 
-    if(hora > 21 || hora < 6){ {
+    if(hora > 21 || hora < 6) {
 
         ridePrice = ridePrice * 1.2;
 
@@ -334,6 +334,7 @@ export const price = async (req,res) => {
     return res.status(200).json(price);
 
 }
+
 
 export const priceOriginal = async (req,res) => {
 
