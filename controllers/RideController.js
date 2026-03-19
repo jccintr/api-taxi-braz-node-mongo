@@ -292,21 +292,42 @@ export const price = async (req,res) => {
     const BANDEIRADA = 17;
     const CUSTO_KM = 3.33;
     let ridePrice = 0;
+
     if(distancia<=1.6){
+
        ridePrice = process.env.VALOR_MINIMO_CORRIDA;
+
     } else {
-     ridePrice =  ( distancia * CUSTO_KM ) + BANDEIRADA;
+
+       ridePrice =  ( distancia * CUSTO_KM ) + BANDEIRADA;
+
     }
    
 
     if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
+
          ridePrice = process.env.VALOR_MINIMO_CORRIDA;
+
     }  else {
+
         const maisProximo = tarifas.reduce((prev, curr) => {
             return (Math.abs(curr - ridePrice) < Math.abs(prev - ridePrice)) ? curr : prev;
         });
+
         ridePrice = maisProximo;
+
     }
+    // se for entre 22h e 5h59min, acrescimo de 20%
+    const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
+    const hora = parseInt(time.split(':')[0]);
+
+    if(hora > 21 || hora < 6){ {
+
+        ridePrice = ridePrice * 1.2;
+
+    }
+
+    ridePrice = round(ridePrice,2);
     
     const price = {valor:parseFloat(ridePrice)};
     addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
