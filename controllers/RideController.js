@@ -292,7 +292,7 @@ export const price = async (req,res) => {
     const BANDEIRADA = 17;
     const CUSTO_KM = 3.33;
     let ridePrice = 0;
-    if(distancia<=1.4){
+    if(distancia<=1.6){
        ridePrice = process.env.VALOR_MINIMO_CORRIDA;
     } else {
      ridePrice =  ( distancia * CUSTO_KM ) + BANDEIRADA;
@@ -302,8 +302,10 @@ export const price = async (req,res) => {
     if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
          ridePrice = process.env.VALOR_MINIMO_CORRIDA;
     }  else {
-        const maiorAproximado = tarifas.find(tarifa => tarifa >= ridePrice);
-        ridePrice = maiorAproximado;
+        const maisProximo = tarifas.reduce((prev, curr) => {
+            return (Math.abs(curr - ridePrice) < Math.abs(prev - ridePrice)) ? curr : prev;
+        });
+        ridePrice = maisProximo;
     }
     
     const price = {valor:parseFloat(ridePrice)};
