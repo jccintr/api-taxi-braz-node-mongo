@@ -326,8 +326,8 @@ export const price = async (req,res) => {
         ridePrice = ridePrice * 1.2;
 
     }
-
-    ridePrice = round(ridePrice,2);
+    console.log('ridePrice =>',ridePrice);
+    ridePrice = Math.round(ridePrice,2);
     
     const price = {valor:parseFloat(ridePrice)};
     addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
