@@ -1,4 +1,4 @@
-import Bairro from '../models/Bairro.js';
+import Bairro from '../models/bairro.js';
 
 class BairroController {
 
