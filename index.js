@@ -8,11 +8,12 @@ import PagamentoRouter from './routes/pagamentoRoutes.js';
 import PassengerRouter from './routes/passengerRoutes.js';
 import DriverRouter from './routes/driverRoutes.js';
 import RideRouter from './routes/rideRoutes.js';
+import BairrosRouter from './routes/bairroRoutes.js';
 import websocket from './websocket.js';
 import cors from 'cors';
-import { coordinates } from './data/coordinates.js';
-import { driversIds } from './data/coordinates.js';
-import Driver from './models/driver.js';
+//import { coordinates } from './data/coordinates.js';
+//import { driversIds } from './data/coordinates.js';
+//import Driver from './models/driver.js';
 
 
 
@@ -37,6 +38,7 @@ app.get('/', function(req, res) {
   app.use(PassengerRouter);
   app.use(DriverRouter);
   app.use(RideRouter);
+  app.use(BairrosRouter);
   //app.use(router);
 
  
