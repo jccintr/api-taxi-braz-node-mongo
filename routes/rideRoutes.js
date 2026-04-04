@@ -10,6 +10,7 @@ RideRouter.get("/rides",AuthDriver,RideController.index);
 RideRouter.get("/rides/:id/status",AuthPassenger,RideController.status);
 RideRouter.post("/rides",AuthPassenger,RideController.store);
 RideRouter.post("/rides/price",AuthPassenger,RideController.price);
+RideRouter.post("/rides/price-taxistas",AuthPassenger,RideController.priceTaxistas);
 RideRouter.post("/rides/:id/accept",AuthDriver,RideController.accept);
 RideRouter.post("/rides/:id/onway",AuthDriver,RideController.onWay);
 RideRouter.post("/rides/:id/arrived",AuthDriver,RideController.arrived);

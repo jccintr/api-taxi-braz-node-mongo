@@ -12,6 +12,6 @@ BairrosRouter.put("/bairros/:id",AuthAdmin ,BairroController.updateBairro);
 BairrosRouter.delete("/bairros/:id",AuthAdmin, BairroController.delete);
 BairrosRouter.post('/bairros/:id/localidades',AuthAdmin ,BairroController.addLocalidade);
 BairrosRouter.put('/bairros/:bairroId/localidades/:localidadeId',AuthAdmin, BairroController.updateLocalidade);
-BairrosRouter.delete('/bairros/:bairroId/localidades/:localidadeId', BairroController.deleteLocalidade);
+BairrosRouter.delete('/bairros/:bairroId/localidades/:localidadeId',AuthAdmin, BairroController.deleteLocalidade);
 
 export default BairrosRouter;

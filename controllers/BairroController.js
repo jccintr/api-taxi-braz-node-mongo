@@ -145,6 +145,43 @@ class BairroController {
         }
     };
 
+        async getLocalidadeById(req, res) {
+        try {
+            const { bairroId, localidadeId } = req.params;
+
+            const bairro = await Bairro.findById(bairroId);
+            
+            if (!bairro) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Bairro não encontrado'
+                });
+            }
+
+            // Busca a localidade dentro do array de subdocumentos
+            const localidade = bairro.localidades.id(localidadeId);
+
+            if (!localidade) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Localidade não encontrada'
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                data: localidade
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                success: false,
+                message: 'Erro ao buscar localidade'
+            });
+        }
+    }
+
     
    async updateLocalidade(req, res)  {
         const { bairroId, localidadeId } = req.params;

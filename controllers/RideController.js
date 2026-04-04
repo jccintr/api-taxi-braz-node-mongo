@@ -1,6 +1,7 @@
 import Ride from '../models/ride.js';
 import Driver from '../models/driver.js';
 import Passenger from '../models/passenger.js';
+import Bairro from '../models/bairro.js';
 import { WebSocket } from 'ws';
 import { addLog } from '../util/logs.js';
 
@@ -294,37 +295,26 @@ export const price = async (req,res) => {
     let ridePrice = 0;
 
     if(distancia<=1.6){
-
        ridePrice = process.env.VALOR_MINIMO_CORRIDA;
-
     } else {
-
        ridePrice =  ( distancia * CUSTO_KM ) + BANDEIRADA;
-
     }
-   
-
+  
     if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
-
-         ridePrice = process.env.VALOR_MINIMO_CORRIDA;
-
-    }  else {
-
+        ridePrice = process.env.VALOR_MINIMO_CORRIDA;
+    } else {
         const maisProximo = tarifas.reduce((prev, curr) => {
             return (Math.abs(curr - ridePrice) < Math.abs(prev - ridePrice)) ? curr : prev;
         });
-
         ridePrice = maisProximo;
-
     }
+
     // se for entre 22h e 5h59min, acrescimo de 20%
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
 
     if(hora > 21 || hora < 6) {
-
         ridePrice = ridePrice * 1.2;
-
     }
     console.log('ridePrice =>',ridePrice);
     ridePrice = Math.round(ridePrice,2);
@@ -577,4 +567,40 @@ export const getRideMessagesPassenger = async (req,res) => {
 
      const messages = ride.messages;
      return res.status(200).json(messages);
+}
+
+export const priceTaxistas = async (req,res) => {
+
+    
+    const {distancia,localidadeId,passengerId} = req.body; 
+    let ridePrice = 0;
+
+    // Busca o bairro que contém a localidade com esse _id
+    const bairro = await Bairro.findOne(
+        { "localidades._id": localidadeId },
+        { nome: 1, "localidades.$": 1 }   // projeta apenas o bairro e a localidade encontrada
+    );
+
+    if (!bairro || !bairro.localidades.length) {
+        return res.status(404).json({
+            success: false,
+            message: 'Localidade não encontrada'
+        });
+    }
+    console.log('localidade =>',bairro.localidades[0]);
+    ridePrice = bairro.localidades[0].valor;
+   
+    // se for entre 22h e 5h59min, acrescimo de 20%
+    const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
+    const hora = parseInt(time.split(':')[0]);
+    if(hora > 21 || hora < 6) {
+        ridePrice = ridePrice * 1.2;
+    }
+    console.log('ridePrice =>',ridePrice);
+    ridePrice = Math.round(ridePrice,2);
+    
+    const price = {valor:parseFloat(ridePrice)};
+    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
+    return res.status(200).json(price);
+
 }
