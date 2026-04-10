@@ -26,11 +26,21 @@ import { addLog } from '../util/logs.js';
 
     if(!bcryptjs.compareSync(password,passenger.password)){
         return res.status(400).json({error:'Nome de usuário e ou senha inválidos.'});
-        }
+    }
+
+    // Verifica se é a primeira corrida concluída
+    const totalRidesFinished = await Ride.countDocuments({
+        passenger: passenger._id,
+        status: 5
+    });
 
         const token = jsonwebtoken.sign({passengerId: passenger._id},process.env.JWT_SECRET_PASSENGER);
         const { password:p, ...rest } = passenger._doc;
-        const ret = {...rest,token};
+        const ret = {
+            ...rest,
+            token,
+            firstRide: totalRidesFinished === 0  // true = tem direito ao desconto
+        };
         addLog(passenger._id,'Login pela tela Login','');
         return res.status(200).json(ret);
     }
@@ -90,8 +100,18 @@ import { addLog } from '../util/logs.js';
        if (!passenger.ativo) {
         return res.status(404).json({error: 'Usuário não encontrado.'});
       }
+
+       // Verifica se é a primeira corrida concluída
+        const totalRidesFinished = await Ride.countDocuments({
+            passenger: passenger._id,
+            status: 5
+        });
+         const ret = {
+             ...passenger._doc,
+            firstRide: totalRidesFinished === 0  // true = tem direito ao desconto
+        };
       addLog(passenger._id,'Login pela tela Preload','');
-       return res.status(200).json(passenger);
+       return res.status(200).json(ret);
     }
 
 

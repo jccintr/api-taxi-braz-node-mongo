@@ -20,6 +20,7 @@ AdminRouter.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController
 AdminRouter.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 AdminRouter.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
 AdminRouter.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);
+//AdminRouter.get("/admin/passengers/:id/rides",AuthAdmin,AdminController.showPassengerRides);
 AdminRouter.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
 AdminRouter.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenger);
 AdminRouter.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
