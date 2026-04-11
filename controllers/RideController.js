@@ -595,13 +595,16 @@ export const priceTaxistas = async (req,res) => {
         });
     }
     console.log('localidade =>',bairro.localidades[0]);
+    const localidade = bairro.localidades[0];
     ridePrice = bairro.localidades[0].valor;
    
-    // se for entre 22h e 5h59min, acrescimo de 20%
+    // se for entre 22h e 5h59min, acrescimo de 20% (bandeira 2)
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
+    let adicionalNoturno = false;
     if(hora > 21 || hora < 6) {
         ridePrice = ridePrice * 1.2;
+        adicionalNoturno = true;
     }
     console.log('ridePrice =>',ridePrice);
     ridePrice = Math.round(ridePrice,2);
@@ -614,7 +617,14 @@ export const priceTaxistas = async (req,res) => {
         ridePrice = ridePrice * 0.8;
     }
     ridePrice = Math.round(ridePrice,2);
-    const price = {valor:parseFloat(ridePrice)};
+    const price = {
+        valor:parseFloat(ridePrice),
+        distancia:distancia,
+        bairro:bairro.nome,
+        localidade:localidade,
+        adicionalNoturno: adicionalNoturno,
+        descontoPrimeiraCorrida: totalRidesFinished == 0 ? true : false
+    };
     addLog(passengerId,'Consultou preço de uma corrida para '+ bairro.nome + ', ' + bairro.localidades[0].nome ,distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
 
