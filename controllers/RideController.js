@@ -8,12 +8,19 @@ import { addLog } from '../util/logs.js';
 
 
 export const store = async (req,res) => {
-
-    
     const {passengerId,origem,destino,duracao,distancia,valor,pagamentoId} = req.body;
-    
-    
     const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamentoId});
+
+
+    // Confirma no backend se tem direito ao desconto (nunca confie só no frontend)
+    const totalRidesFinished = await Ride.countDocuments({
+        passenger: passengerId,
+        status: 5
+    });
+    if(totalRidesFinished === 0) {
+         newRide.events.push({data: new Date(),descricao: "20% de desconto aplicado - Primeira corrida do passageiro"});
+    }
+
     newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
 
@@ -598,7 +605,15 @@ export const priceTaxistas = async (req,res) => {
     }
     console.log('ridePrice =>',ridePrice);
     ridePrice = Math.round(ridePrice,2);
-    
+    // verifica se é a primeira corrida do passageiro, se for, aplica 20% de desconto
+    const totalRidesFinished = await Ride.countDocuments({
+        passenger: passengerId,
+        status: 5
+    });
+    if(totalRidesFinished == 0) {
+        ridePrice = ridePrice * 0.8;
+    }
+    ridePrice = Math.round(ridePrice,2);
     const price = {valor:parseFloat(ridePrice)};
     addLog(passengerId,'Consultou preço de uma corrida para '+ bairro.nome + ', ' + bairro.localidades[0].nome ,distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
