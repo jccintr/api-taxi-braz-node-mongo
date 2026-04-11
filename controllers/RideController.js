@@ -602,9 +602,11 @@ export const priceTaxistas = async (req,res) => {
     const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
     const hora = parseInt(time.split(':')[0]);
     let adicionalNoturno = false;
+    let valorAdicionalNoturno = 0;
     if(hora > 21 || hora < 6) {
-        ridePrice = ridePrice * 1.2;
+        //ridePrice = ridePrice * 1.2;
         adicionalNoturno = true;
+        valorAdicionalNoturno = ridePrice * 0.2;
     }
     console.log('ridePrice =>',ridePrice);
     ridePrice = Math.round(ridePrice,2);
@@ -613,17 +615,24 @@ export const priceTaxistas = async (req,res) => {
         passenger: passengerId,
         status: 5
     });
+    let valorDescontoPrimeiraCorrida = 0;
     if(totalRidesFinished == 0) {
-        ridePrice = ridePrice * 0.8;
+        //ridePrice = ridePrice * 0.8;
+        valorDescontoPrimeiraCorrida = ridePrice * 0.2;
     }
-    ridePrice = Math.round(ridePrice,2);
+    const valorTotalCorrida = ridePrice + valorAdicionalNoturno - valorDescontoPrimeiraCorrida;
+    const valorIntegralCorrida = ridePrice + valorAdicionalNoturno;
+    ridePrice = Math.round(valorTotalCorrida,2);
     const price = {
         valor:parseFloat(ridePrice),
+        valorIntegral: parseFloat(valorIntegralCorrida),
         distancia:distancia,
         bairro:bairro.nome,
         localidade:localidade,
         adicionalNoturno: adicionalNoturno,
-        descontoPrimeiraCorrida: totalRidesFinished == 0 ? true : false
+        valorAdicionalNoturno: valorAdicionalNoturno,
+        descontoPrimeiraCorrida: totalRidesFinished == 0 ? true : false,
+        valorDescontoPrimeiraCorrida: valorDescontoPrimeiraCorrida
     };
     addLog(passengerId,'Consultou preço de uma corrida para '+ bairro.nome + ', ' + bairro.localidades[0].nome ,distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
