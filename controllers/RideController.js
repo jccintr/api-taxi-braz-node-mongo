@@ -46,6 +46,9 @@ export const store = async (req,res) => {
         },
         body: JSON.stringify({to:toDrivers,sound,title,body})
     });
+    if(response.status()!==200){
+        console.log(response.errors);
+    }
     addLog(passengerId,'Solicitou uma corrida',`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
     //addLog(passengerId,'Resposta do Expo Push',response.data.status);
     const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
