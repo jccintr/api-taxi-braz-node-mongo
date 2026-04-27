@@ -3,6 +3,7 @@ import Ride from '../models/ride.js';
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
 import { sendResetPasswordEmail } from '../util/sendEmail.js';
+import { addDriverLog } from '../util/logs.js';
 
 
 export const store = async (req,res) => {
@@ -61,6 +62,7 @@ if(!bcryptjs.compareSync(password,driver.password)){
    
     const { password:p, ...rest } = driver._doc;
     const ret = {...rest,token};
+    addDriverLog(driver._id,'Login pela tela Login','');
     return res.status(200).json(ret);
 }
 
@@ -115,7 +117,7 @@ export const validateToken  = async (req,res) => {
    if (!driver) {
     return res.status(404).json({error: 'Usuário não encontrado.'});
   }
-
+   addDriverLog(driver._id,'Login pela tela Preload','');
    return res.status(200).json(driver);
 }
 
