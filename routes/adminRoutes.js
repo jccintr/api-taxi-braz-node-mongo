@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as AdminController from '../controllers/AdminController.js'
 import * as PassengerMessageController from "../controllers/PassengerMessageController.js";
 import * as PassengerLogController from "../controllers/PassengerLogController.js"
-import * as PassengerLogController from "../controllers/DriverLogController.js"
+//import * as DriverLogController from "../controllers/DriverLogController.js"
 import AuthAdmin from '../middleware/AuthAdmin.js';
 
 
@@ -20,8 +20,10 @@ AdminRouter.delete("/admin/passengers/messages/:id",AuthAdmin,PassengerMessageCo
 AdminRouter.get("/admin/logs/passengers?",AuthAdmin,PassengerLogController.index);
 AdminRouter.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController.destroy);
 
+/*
 AdminRouter.get("/admin/logs/drivers?",AuthAdmin,DriverLogController.index);
 AdminRouter.delete("/admin/logs/drivers/:id",AuthAdmin,DriverLogController.destroy);
+*/
 
 AdminRouter.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 AdminRouter.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
