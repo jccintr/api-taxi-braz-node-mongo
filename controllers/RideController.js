@@ -3,7 +3,7 @@ import Driver from '../models/driver.js';
 import Passenger from '../models/passenger.js';
 import Bairro from '../models/bairro.js';
 import { WebSocket } from 'ws';
-import { addLog } from '../util/logs.js';
+import { addLog, addDriverLog } from '../util/logs.js';
 
 
 
@@ -34,6 +34,7 @@ export const store = async (req,res) => {
         }
     });
     console.log('toDrivers =>',toDrivers);
+    
     // envia a notificação para o motorista
     const sound = 'default';
     const title = 'Nova Corrida';
@@ -50,7 +51,7 @@ export const store = async (req,res) => {
         console.log(response.errors);
     }
     addLog(passengerId,'Solicitou uma corrida',`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
-    //addLog(passengerId,'Resposta do Expo Push',response.data.status);
+    
     const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
     return res.status(201).json(retRide);
 
@@ -87,7 +88,7 @@ export const accept = async (req,res) => {
             }
         }
       });
-
+    addDriverLog(driverId,'Aceitou uma corrida',`De: ${ride.origem.address} Para: ${ride.destino.address} Valor: R$ ${ride.valor.toFixed(2)}`);
     return res.status(200).json(acceptedRide);
 
   
@@ -225,7 +226,7 @@ export const finish = async (req,res) => {
            }
        }
      });
-
+   addDriverLog(ride.driver._id,'Finalizou uma corrida',`De: ${ride.origem.address} Para: ${ride.destino.address} Valor: R$ ${ride.valor.toFixed(2)}`);
    return res.status(200).json(newRide);
 
 }
@@ -249,7 +250,7 @@ export const passengerCancel = async (req,res) => {
     ride.status = -1;
     ride.events.push({data: new Date(),descricao: "Corrida cancelada pelo passageiro"});
     await ride.save();
-
+    addLog(passengerId,'Cancelou uma corrida',`De: ${ride.origem.address} Para: ${ride.destino.address} Valor: R$ ${ride.valor.toFixed(2)}`);
     return res.status(200).json(ride);
 }
 
@@ -281,7 +282,7 @@ export const driverCancel = async (req,res) => {
            }
        }
      });
-
+   addDriverLog(driverId,'Cancelou uma corrida',`De: ${ride.origem.address} Para: ${ride.destino.address} Valor: R$ ${ride.valor.toFixed(2)} Motivo: ${motivo}`);
    return res.status(200).json(newRide);
 }
 
