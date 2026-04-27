@@ -33,7 +33,7 @@ export const store = async (req,res) => {
             toDrivers.push(driver.pushToken);
         }
     });
-    
+    console.log('toDrivers =>',toDrivers);
     // envia a notificação para o motorista
     const sound = 'default';
     const title = 'Nova Corrida';
@@ -46,7 +46,7 @@ export const store = async (req,res) => {
         },
         body: JSON.stringify({to:toDrivers,sound,title,body})
     });
-    if(response.status()!==200){
+    if(response.status!==200){
         console.log(response.errors);
     }
     addLog(passengerId,'Solicitou uma corrida',`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
