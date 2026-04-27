@@ -1,6 +1,6 @@
 
 import PassengerLog from "../models/passengerLog.js";
-import DriverLog from "../models/DriverLog.js";
+import DriverLog from "../models/driverLog.js";
 
 export const addLog = async (passenger,action,info) => {
 
