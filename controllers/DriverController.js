@@ -38,7 +38,7 @@ export const store = async (req,res) => {
   }
 
 
-  export const login =  async (req,res) => {
+export const login =  async (req,res) => {
 
     const {email,password} = req.body;
 
@@ -242,6 +242,8 @@ export const resetPassword = async (req,res) => {
 
 }
 
+
+
 const generateVerificationCode = () => {
 
     const  strRandomNumber = Math.random().toString();
@@ -351,6 +353,8 @@ function getMonday(d) {
      // adjust when day is sunday
       return new Date(d.setDate(diff));
      } 
+
+
      
 
 

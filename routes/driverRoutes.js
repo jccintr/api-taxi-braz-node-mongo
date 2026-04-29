@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as DriverController from "../controllers/DriverController.js";
 import AuthDriver from '../middleware/AuthDriver.js';
 
+
 const DriverRouter = Router();
 
 DriverRouter.post("/drivers/auth/register",DriverController.store);
@@ -19,7 +20,6 @@ DriverRouter.post("/drivers/update/veiculo",AuthDriver,DriverController.updateVe
 DriverRouter.get("/drivers/rides",AuthDriver,DriverController.driverRides);
 //DriverRouter.post("/drivers/ganhos",AuthDriver,DriverController.getGanhos);
 DriverRouter.get("/drivers/ganhos",AuthDriver,DriverController.getGanhos2);
-
 
 
 export default DriverRouter;

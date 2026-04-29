@@ -4,6 +4,7 @@ import * as PassengerMessageController from "../controllers/PassengerMessageCont
 import * as PassengerLogController from "../controllers/PassengerLogController.js"
 import * as DriverLogController from "../controllers/DriverLogController.js"
 import AuthAdmin from '../middleware/AuthAdmin.js';
+import Admin from '../models/admin.js';
 
 
 
@@ -38,4 +39,7 @@ AdminRouter.get("/admin/rides/solicited?",AuthAdmin,AdminController.getSolicited
 AdminRouter.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 AdminRouter.get("/admin/dashboard",AuthAdmin,AdminController.getDashboardData);
 
+
+AdminRouter.post("/admin/drivers/sendPushMessage",AuthAdmin,AdminController.sendPushMessage);
+AdminRouter.post("/admin/drivers/sendPushMessageToAll",AuthAdmin,AdminController.sendPushMessageToAllDrivers);
 export default AdminRouter;

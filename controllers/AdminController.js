@@ -5,6 +5,8 @@ import Passenger from '../models/passenger.js';
 import Driver from '../models/driver.js';
 import Ride from '../models/ride.js';
 import PassengerLog from '../models/passengerLog.js';
+import mongoose from 'mongoose';
+
 
 
 export const login =  async (req,res) => {
@@ -113,7 +115,7 @@ export const store = async (req,res) => {
 
   export const drivers = async (req,res) => {
 
-    const drivers = await Driver.find().select('name avatar rating').sort({name: 'asc'});
+    const drivers = await Driver.find().select('name avatar rating pushToken').sort({name: 'asc'});
            
     return res.status(200).json(drivers);
 
@@ -259,6 +261,94 @@ export const getDashboardData  = async (req,res) => {
 
   return res.status(200).json(dashboard);
 
+}
+
+export const sendPushMessageToAllDrivers = async (req,res) => {
+
+  const {title,body} = req.body;
+
+  const drivers = await Driver.find(
+    { pushToken: { $ne: null } },
+    'pushToken'  
+  );
+
+  if(drivers.length === 0){
+    return res.status(400).json({error:'Nenhum motorista com push token encontrado.'});
+  }
+
+  const toDrivers = [];
+    drivers.forEach((driver)=>{
+        toDrivers.push(driver.pushToken);
+    });
+
+    const notificationSent = await sendPushNotificationToAllDrivers(toDrivers,title,body);
+    if (!notificationSent) {
+        return res.status(500).json({error:'Falha ao enviar notificações.'});
+    }
+    return res.status(200).json({mensagem:'Notificações enviadas com sucesso.'});
+  
+}
+export const sendPushMessage = async (req,res) => {
+
+    const {driverId,title,body} = req.body;
+
+
+    if (!mongoose.Types.ObjectId.isValid(driverId)) {
+        return res.status(400).json({ 
+            error: 'driverId inválido. Deve ser um ID do MongoDB válido.' 
+        });
+    }
+
+    const driver = await Driver.findById(driverId).select('pushToken');
+    if(!driver){
+        return res.status(404).json({error:'Motorista nao encontrado.'});
+    }
+    if(!driver.pushToken){
+        return res.status(400).json({error:'Motorista não possui push token.'});
+    }
+    const notificationSent = await sendPushNotificationToDriver(driver.pushToken,title,body);
+    if (!notificationSent) {
+        return res.status(500).json({error:'Falha ao enviar notificação.'});
+    }
+    return res.status(200).json({mensagem:'Notificação enviada com sucesso.'});
+}
+
+async function sendPushNotificationToAllDrivers(toDrivers,title,body) {
+    const sound = 'default';
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({to:toDrivers,sound,title,body})
+    });
+
+    if (!response.ok) {
+        return false;
+    } else {
+        return true;
+    }
+}
+async function sendPushNotificationToDriver(pushToken,title,body) {
+    const sound = 'default';
+    const toDrivers = [];
+    toDrivers.push(pushToken);
+
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({to:toDrivers,sound,title,body})
+    });
+
+    if (!response.ok) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 
