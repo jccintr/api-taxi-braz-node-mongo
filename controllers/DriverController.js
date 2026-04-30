@@ -80,6 +80,7 @@ export const setStatus =  async (req,res) => {
 
 }
 
+/*
 export const updateLocation =  async (req,res) => {
   
   const {driverId,position} = req.body;
@@ -96,7 +97,7 @@ export const updateLocation =  async (req,res) => {
   }
 
 }
-
+*/
 export const getLocation =  async (req,res) => {
 
     const drivers = await Driver.find({online:true}).select('name telefone veiculo position');
@@ -354,7 +355,128 @@ function getMonday(d) {
       return new Date(d.setDate(diff));
      } 
 
+// Distância entre dois pontos (Haversine)
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 
-     
+
+// Define quantos motoristas mais próximos podem ver a corrida
+function getMaxVisiblePosition(elapsedSeconds) {
+  const initialBatch = 3;
+  const batchSize = 2;
+  const stepSeconds = 15;
+
+  if (elapsedSeconds < 0) return 0;
+
+  const steps = Math.floor(elapsedSeconds / stepSeconds);
+  let visible = initialBatch + (steps * batchSize);
+
+  // Após 75-90 segundos, libera para todos (máximo ~20 motoristas)
+  return Math.min(visible, 20);
+}
+
+export const updateLocation = async (req, res) => {
+  const { driverId, position } = req.body;
+
+  if (!position?.coords?.latitude || !position?.coords?.longitude) {
+    return res.status(400).json({ message: "Posição inválida" });
+  }
+
+  const driverLat = position.coords.latitude;
+  const driverLon = position.coords.longitude;
+
+  // 1. Atualiza a posição do motorista
+  const updatedDriver = await Driver.findByIdAndUpdate(
+    driverId,
+    { 
+      position, 
+      online: true,
+      lastLocationUpdate: new Date()
+    },
+    { new: true }
+  );
+
+  if (!updatedDriver) {
+    return res.status(404).json({ message: "Motorista não encontrado" });
+  }
+
+  // 2. Busca TODOS os motoristas online (precisamos deles para ordenar)
+  const onlineDrivers = await Driver.find({ 
+    online: true,
+    "position.coords.latitude": { $exists: true },
+    "position.coords.longitude": { $exists: true }
+  }).select('_id position');
+
+  // 3. Busca as corridas abertas
+  const rides = await Ride.find({ status: 0 })
+    .populate('passenger', 'name avatar rating')
+    .populate('pagamento', 'nome')
+    .select('data distancia duracao valor origem destino');
+
+  const now = new Date();
+
+  // 4. Processa cada corrida
+  const visibleRides = rides.map(ride => {
+    const origem = ride.origem;
+
+    // Calcula a distância de TODOS os motoristas online até a origem da corrida
+    const driversWithDistance = onlineDrivers.map(driver => {
+      const dLat = driver.position.coords.latitude;
+      const dLon = driver.position.coords.longitude;
+
+      const distanceKm = haversineDistance(
+        dLat, dLon,
+        origem.latitude, origem.longitude
+      );
+
+      return {
+        driverId: driver._id,
+        distanceKm: distanceKm
+      };
+    });
+
+    // Ordena os motoristas do mais próximo para o mais distante
+    driversWithDistance.sort((a, b) => a.distanceKm - b.distanceKm);
+
+    // Calcula há quanto tempo a corrida está aberta
+    const elapsedSeconds = (now - new Date(ride.data)) / 1000;
+
+    // Define quantos motoristas mais próximos podem ver esta corrida
+    const maxVisiblePosition = getMaxVisiblePosition(elapsedSeconds);
+
+    // Verifica se o motorista atual está entre os "N" mais próximos permitidos
+    const driverPositionInList = driversWithDistance.findIndex(
+      d => d.driverId.toString() === driverId.toString()
+    ) + 1; // +1 porque findIndex começa em 0
+
+    const isVisible = driverPositionInList <= maxVisiblePosition;
+
+    return {
+      ...ride.toObject(),
+      distanceToDriverKm: Number(
+        driversWithDistance.find(d => d.driverId.toString() === driverId.toString())?.distanceKm.toFixed(3) || 999
+      ),
+      elapsedSeconds: Math.floor(elapsedSeconds),
+      isVisible
+    };
+  })
+  // Filtra apenas as corridas que este motorista pode ver
+  .filter(ride => ride.isVisible);
+
+  // Ordena as corridas visíveis por distância (mais perto primeiro)
+  visibleRides.sort((a, b) => a.distanceToDriverKm - b.distanceToDriverKm);
+
+  return res.status(200).json(visibleRides);
+};
 
 
