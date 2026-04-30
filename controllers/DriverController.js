@@ -80,7 +80,7 @@ export const setStatus =  async (req,res) => {
 
 }
 
-/*
+
 export const updateLocation =  async (req,res) => {
   
   const {driverId,position} = req.body;
@@ -97,7 +97,7 @@ export const updateLocation =  async (req,res) => {
   }
 
 }
-*/
+
 export const getLocation =  async (req,res) => {
 
     const drivers = await Driver.find({online:true}).select('name telefone veiculo position');
@@ -385,6 +385,7 @@ function getMaxVisiblePosition(elapsedSeconds) {
   return Math.min(visible, 20);
 }
 
+/*
 export const updateLocation = async (req, res) => {
   const { driverId, position } = req.body;
 
@@ -478,5 +479,5 @@ export const updateLocation = async (req, res) => {
 
   return res.status(200).json(visibleRides);
 };
-
+*/
 
