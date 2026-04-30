@@ -84,6 +84,7 @@ export const setStatus =  async (req,res) => {
 export const updateLocation =  async (req,res) => {
   
   const {driverId,position} = req.body;
+  console.log('Driver Position request=>',position);
   const updatedLocation = await Driver.findByIdAndUpdate(driverId,{position,online:true});
        
   if(!updatedLocation){
