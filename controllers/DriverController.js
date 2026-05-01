@@ -81,6 +81,7 @@ export const setStatus =  async (req,res) => {
 }
 
 
+/*
 export const updateLocation =  async (req,res) => {
   
   const {driverId,position} = req.body;
@@ -89,16 +90,15 @@ export const updateLocation =  async (req,res) => {
        
   if(!updatedLocation){
       return res.status(404).json({message: "Driver não encontrado"});
-  } else {
+  } 
 
     const rides = await Ride.find({status:0}).populate('passenger','name avatar rating').populate('pagamento','nome').select('data distancia duracao valor origem destino');
- 
     return res.status(200).json(rides);
  
-  }
+  
 
 }
-
+*/
 export const getLocation =  async (req,res) => {
 
     const drivers = await Driver.find({online:true}).select('name telefone veiculo position');
@@ -386,16 +386,12 @@ function getMaxVisiblePosition(elapsedSeconds) {
   return Math.min(visible, 20);
 }
 
-/*
 export const updateLocation = async (req, res) => {
   const { driverId, position } = req.body;
 
-  if (!position?.coords?.latitude || !position?.coords?.longitude) {
+  if (!position?.latitude || !position?.longitude) {
     return res.status(400).json({ message: "Posição inválida" });
   }
-
-  const driverLat = position.coords.latitude;
-  const driverLon = position.coords.longitude;
 
   // 1. Atualiza a posição do motorista
   const updatedDriver = await Driver.findByIdAndUpdate(
@@ -403,7 +399,6 @@ export const updateLocation = async (req, res) => {
     { 
       position, 
       online: true,
-      lastLocationUpdate: new Date()
     },
     { new: true }
   );
@@ -415,16 +410,18 @@ export const updateLocation = async (req, res) => {
   // 2. Busca TODOS os motoristas online (precisamos deles para ordenar)
   const onlineDrivers = await Driver.find({ 
     online: true,
-    "position.coords.latitude": { $exists: true },
-    "position.coords.longitude": { $exists: true }
+    "position.latitude": { $exists: true },
+    "position.longitude": { $exists: true }
   }).select('_id position');
+  console.log('Motoristas online atualizados', onlineDrivers.length);
+  console.log(onlineDrivers);
 
   // 3. Busca as corridas abertas
   const rides = await Ride.find({ status: 0 })
     .populate('passenger', 'name avatar rating')
     .populate('pagamento', 'nome')
     .select('data distancia duracao valor origem destino');
-
+  console.log('Corridas abertas', rides);
   const now = new Date();
 
   // 4. Processa cada corrida
@@ -433,18 +430,12 @@ export const updateLocation = async (req, res) => {
 
     // Calcula a distância de TODOS os motoristas online até a origem da corrida
     const driversWithDistance = onlineDrivers.map(driver => {
-      const dLat = driver.position.coords.latitude;
-      const dLon = driver.position.coords.longitude;
+      const dLat = driver.position.latitude;
+      const dLon = driver.position.longitude;
 
-      const distanceKm = haversineDistance(
-        dLat, dLon,
-        origem.latitude, origem.longitude
-      );
+      const distanceKm = haversineDistance(dLat,dLon,origem.latitude, origem.longitude);
 
-      return {
-        driverId: driver._id,
-        distanceKm: distanceKm
-      };
+      return {driverId: driver._id,distanceKm: distanceKm};
     });
 
     // Ordena os motoristas do mais próximo para o mais distante
@@ -477,8 +468,6 @@ export const updateLocation = async (req, res) => {
 
   // Ordena as corridas visíveis por distância (mais perto primeiro)
   visibleRides.sort((a, b) => a.distanceToDriverKm - b.distanceToDriverKm);
-
+  console.log('Corridas visíveis para o motorista', visibleRides);
   return res.status(200).json(visibleRides);
 };
-*/
-
