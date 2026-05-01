@@ -38,8 +38,8 @@ export const store = async (req,res) => {
     // envia a notificação para o motorista
     const sound = 'default';
     const title = 'Nova Corrida Solicitada';
-    const body = 'Abra o aplicativo Braz Taxi para motoristas para ver os detalhes da corrida.';
-    //const body = `${passenger.name} solicita uma corrida de ${origem.address}, para ${destino.address}, no valor de R$ ${valor.toFixed(2)}.`;
+    //const body = 'Abra o aplicativo Braz Taxi para motoristas para ver os detalhes da corrida.';
+    const body = `${passenger.name} solicita uma corrida de ${origem.address}, para ${destino.address}, no valor de R$ ${valor.toFixed(2)}.`;
     const response = await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
         headers: {
