@@ -414,7 +414,7 @@ export const updateLocation = async (req, res) => {
     "position.longitude": { $exists: true }
   }).select('_id position');
   console.log('Motoristas online atualizados', onlineDrivers.length);
-  console.log(onlineDrivers);
+  //console.log(onlineDrivers);
 
   // 3. Busca as corridas abertas
   const rides = await Ride.find({ status: 0 })
