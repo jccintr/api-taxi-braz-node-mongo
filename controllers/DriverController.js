@@ -406,7 +406,7 @@ export const updateLocation = async (req, res) => {
   if (!updatedDriver) {
     return res.status(404).json({ message: "Motorista não encontrado" });
   }
-  console.log('Motorista:', updatedDriver.name);
+  console.log('Atualização de Localização recebida. Motorista:', updatedDriver.name);
   // 2. Busca TODOS os motoristas online (precisamos deles para ordenar)
   const onlineDrivers = await Driver.find({ 
     online: true,
