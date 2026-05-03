@@ -101,7 +101,7 @@ export const updateLocation =  async (req,res) => {
 */
 export const getLocation =  async (req,res) => {
 
-    const drivers = await Driver.find({online:true}).select('name telefone veiculo position');
+    const drivers = await Driver.find({online:true}).select('name avatar telefone veiculo position').sort({ name: 1 });;
 
 
     return res.status(200).json(drivers);
