@@ -6,6 +6,59 @@ import { WebSocket } from 'ws';
 import { addLog, addDriverLog } from '../util/logs.js';
 
 
+// chamada pelo pax para solicitar a corrida
+// criar storeWithDriver para corridas solicitadas para determinado motorista
+export const storeWithDriver = async (req,res) => {
+
+    const {passengerId,origem,destino,duracao,distancia,valor,pagamentoId} = req.body;
+    const driverId = req.params.driverId;
+    const newRide = new Ride({passenger:passengerId,origem,destino,duracao,distancia,valor,pagamento:pagamentoId,driver:driverId});
+
+    // Confirma no backend se tem direito ao desconto (nunca confie só no frontend)
+    const totalRidesFinished = await Ride.countDocuments({
+        passenger: passengerId,
+        status: 5
+    });
+    if(totalRidesFinished === 0) {
+         newRide.events.push({data: new Date(),descricao: "20% de desconto aplicado - Primeira corrida do passageiro"});
+    }
+
+    newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
+    await newRide.save();
+
+    const passenger = await Passenger.findById(passengerId).select('name'); 
+
+
+    const selectedDriver = await Driver.findById(driverId).select('name pushToken');
+    const toDrivers = [];
+    toDrivers.push(selectedDriver.pushToken)
+
+     // envia a notificação para o motorista
+    const sound = 'default';
+    const title = `${passenger.name} solicita corrida`;
+    const body = `${passenger.name} selecionou você para uma corrida de ${origem.address}, para ${destino.address}, no valor de R$ ${valor.toFixed(2)}.`;
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({to:toDrivers,sound,title,body})
+    });
+
+    if(response.status!==200){
+        console.log(response.errors);
+    }
+
+    addLog(passengerId,`Solicitou uma corrida com o motorista ${selectedDriver.name}`,`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
+    
+    const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
+    
+    return res.status(201).json(retRide);
+
+    
+
+}
 
 export const store = async (req,res) => {
     const {passengerId,origem,destino,duracao,distancia,valor,pagamentoId} = req.body;
@@ -25,8 +78,9 @@ export const store = async (req,res) => {
     await newRide.save();
 
     const passenger = await Passenger.findById(passengerId).select('name'); 
+
+
     const drivers = await Driver.find({online:true}).select('pushToken');
-    
     const toDrivers = [];
     drivers.forEach((driver)=>{
         if(driver.pushToken){
@@ -48,16 +102,20 @@ export const store = async (req,res) => {
         },
         body: JSON.stringify({to:toDrivers,sound,title,body})
     });
+
     if(response.status!==200){
         console.log(response.errors);
     }
+
     addLog(passengerId,'Solicitou uma corrida',`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
     
     const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
+    
     return res.status(201).json(retRide);
 
 }
 
+// chamada pelo driver ao aceitar a corrida
 export const accept = async (req,res) => {
 
     const rideId = req.params.id;
