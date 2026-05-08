@@ -386,7 +386,7 @@ function getMaxVisiblePosition(elapsedSeconds) {
   return Math.min(visible, 20);
 }
 
-export const updateLocation = async (req, res) => {
+export const updateLocation_old = async (req, res) => {
   const { driverId, position } = req.body;
 
   if (!position?.latitude || !position?.longitude) {
@@ -469,5 +469,120 @@ export const updateLocation = async (req, res) => {
   // Ordena as corridas visíveis por distância (mais perto primeiro)
   visibleRides.sort((a, b) => a.distanceToDriverKm - b.distanceToDriverKm);
   console.log('Corridas visíveis para o motorista', visibleRides);
+  return res.status(200).json(visibleRides);
+};
+
+export const updateLocation = async (req, res) => {
+  const { driverId, position } = req.body;
+
+  if (!position?.latitude || !position?.longitude) {
+    return res.status(400).json({ message: "Posição inválida" });
+  }
+
+  // 1. Atualiza a posição do motorista
+  const updatedDriver = await Driver.findByIdAndUpdate(
+    driverId,
+    { 
+      position, 
+      online: true,
+    },
+    { new: true }
+  );
+
+  if (!updatedDriver) {
+    return res.status(404).json({ message: "Motorista não encontrado" });
+  }
+
+  console.log('Atualização de Localização recebida. Motorista:', updatedDriver.name);
+
+  const now = new Date();
+
+  // 2. Busca todas as corridas abertas (status 0)
+  const allOpenRides = await Ride.find({ status: 0 })
+    .populate('passenger', 'name avatar rating')
+    .populate('pagamento', 'nome')
+    .select('data distancia duracao valor origem destino driver');
+
+  // 3. Separa as corridas em dois grupos
+  const assignedRides = [];   // Corridas onde o passageiro já escolheu este motorista
+  const openRides = [];       // Corridas abertas (sem motorista selecionado)
+
+  allOpenRides.forEach(ride => {
+    if (ride.driver && ride.driver.toString() === driverId) {
+      assignedRides.push(ride);
+    } else if (!ride.driver) {
+      openRides.push(ride);
+    }
+  });
+
+  console.log(`Corridas atribuídas: ${assignedRides.length} | Corridas abertas: ${openRides.length}`);
+
+  // 4. Processa as corridas abertas (lógica antiga de proximidade + tempo)
+  const visibleOpenRides = [];
+
+  if (openRides.length > 0) {
+    // Busca todos os motoristas online para calcular ranking de proximidade
+    const onlineDrivers = await Driver.find({ 
+      online: true,
+      "position.latitude": { $exists: true },
+      "position.longitude": { $exists: true }
+    }).select('_id position');
+
+    visibleOpenRides.push(...openRides.map(ride => {
+      const origem = ride.origem;
+
+      const driversWithDistance = onlineDrivers.map(driver => {
+        const distanceKm = haversineDistance(
+          driver.position.latitude,
+          driver.position.longitude,
+          origem.latitude,
+          origem.longitude
+        );
+        return { driverId: driver._id, distanceKm };
+      });
+
+      driversWithDistance.sort((a, b) => a.distanceKm - b.distanceKm);
+
+      const elapsedSeconds = (now - new Date(ride.data)) / 1000;
+      const maxVisiblePosition = getMaxVisiblePosition(elapsedSeconds);
+
+      const driverPositionInList = driversWithDistance.findIndex(
+        d => d.driverId.toString() === driverId.toString()
+      ) + 1;
+
+      const isVisible = driverPositionInList <= maxVisiblePosition;
+
+      return {
+        ...ride.toObject(),
+        distanceToDriverKm: Number(
+          driversWithDistance.find(d => d.driverId.toString() === driverId.toString())?.distanceKm.toFixed(3) || 999
+        ),
+        elapsedSeconds: Math.floor(elapsedSeconds),
+        isVisible
+      };
+    }).filter(ride => ride.isVisible));
+  }
+
+  // 5. Combina as corridas atribuídas + as abertas visíveis
+  const visibleRides = [
+    ...assignedRides.map(ride => ({
+      ...ride.toObject(),
+      distanceToDriverKm: 0,           // Prioridade máxima
+      elapsedSeconds: 0,
+      isVisible: true,
+      isAssigned: true                 // Flag útil no frontend
+    })),
+    ...visibleOpenRides
+  ];
+
+  // 6. Ordena: primeiro as atribuídas, depois por distância
+  visibleRides.sort((a, b) => {
+    if (a.isAssigned && !b.isAssigned) return -1;
+    if (!a.isAssigned && b.isAssigned) return 1;
+    return (a.distanceToDriverKm || 999) - (b.distanceToDriverKm || 999);
+  });
+
+  console.log(`Total de corridas visíveis para o motorista: ${visibleRides.length}`);
+
   return res.status(200).json(visibleRides);
 };

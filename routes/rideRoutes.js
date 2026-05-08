@@ -3,6 +3,8 @@ import * as RideController from "../controllers/RideController.js";
 import AuthPassenger from '../middleware/AuthPassenger.js';
 import AuthDriver from '../middleware/AuthDriver.js';
 
+// atenção
+// sempre colocar as rotas estaticas antes das rotas dinamicas
 
 const RideRouter = Router();
 
