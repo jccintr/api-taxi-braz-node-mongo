@@ -75,7 +75,7 @@ export const setStatus =  async (req,res) => {
     if(!updatedDriver){
         return res.status(404).json({message: "Driver não encontrado"});
     } else {
-        return res.status(200).json({message:"Driver status updated"});
+        return res.status(200).json({online:updatedDriver.online,message:"Driver status updated"});
     }
 
 }
