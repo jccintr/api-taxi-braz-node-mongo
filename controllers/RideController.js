@@ -357,8 +357,11 @@ export const status = async (req,res) => {
     return res.status(200).json({status:ride.status});
 }
 
-export const price = async (req,res) => {
-
+export const price_backup_14_05_2026 = async (req,res) => {
+    // parametros
+    // * valorMinimoCorrida R$ 10
+    // * valorKm R$ 2 / km
+    //
     const tarifas = [15,20,25,30,35,40,45,50,60,70,75,80,90,100,110];
     const {distancia,passengerId} = req.body; 
     const BANDEIRADA = 17;
@@ -371,6 +374,7 @@ export const price = async (req,res) => {
        ridePrice =  ( distancia * CUSTO_KM ) + BANDEIRADA;
     }
   
+
     if(ridePrice < process.env.VALOR_MINIMO_CORRIDA) {
         ridePrice = process.env.VALOR_MINIMO_CORRIDA;
     } else {
@@ -397,6 +401,7 @@ export const price = async (req,res) => {
 }
 
 
+// price original do braz driver
 export const priceOriginal = async (req,res) => {
 
     // parametros a serem considerados: preco do combustivel, distancia, horario
@@ -701,4 +706,91 @@ export const priceTaxistas = async (req,res) => {
     addLog(passengerId,'Consultou preço de uma corrida para '+ bairro.nome + ', ' + bairro.localidades[0].nome ,distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
 
+}
+
+export const price = async (req,res) => {
+    const {distancia,passengerId} = req.body; 
+   
+
+     let ridePrice = 0
+
+    if(distancia<=15){
+       ridePrice = calcularPrecoAte15Km(distancia);
+    } else {
+      ridePrice = calcularPrecoAcima15Km(distancia);
+    }
+
+
+
+    
+
+    // se for entre 22h e 5h59min, acrescimo de 20%
+    const time = new Date().toLocaleTimeString("pt-BR",{timeZone: "America/Sao_Paulo"});
+    const hora = parseInt(time.split(':')[0]);
+
+    if(hora > 21 || hora < 6) {
+        ridePrice = ridePrice * 1.2;
+    }
+
+
+
+//    console.log('ridePrice =>',ridePrice);
+    ridePrice = Math.round(ridePrice,2);
+    
+    const price = {valor:parseFloat(ridePrice)};
+    addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
+    return res.status(200).json(price);
+
+}
+
+function calcularPrecoAte15Km(distanciaKm, config = {}) {
+    const {
+        precoBase = 8.00,           // Bandeirada / preço de partida
+        taxaInicialPorKm = 2.80,    // Preço por km em corridas muito curtas
+        taxaDecaimento = 0.08,      // Quão rápido o preço por km cai (0.05 = lento, 0.12 = agressivo)
+        precoMinimo = 12.00         // Valor mínimo da corrida
+    } = config;
+
+    if (distanciaKm <= 0) return precoMinimo;
+
+    // Preço variável = integral da taxa marginal exponencial
+    const precoVariavel = (taxaInicialPorKm / taxaDecaimento) * 
+                         (1 - Math.exp(-taxaDecaimento * distanciaKm));
+
+    let precoTotal = precoBase + precoVariavel;
+
+    return Math.max(precoTotal, precoMinimo);
+}
+
+function calcularPrecoAcima15Km(distanciaKm, config = {}) {
+    const {
+        precoMinimo = 12.00,
+        multiplicador = 1.0,
+       } = config;
+
+    let preco = 0;
+
+    if (distanciaKm <= 2) {
+        // Quadrática ajustada para os 3 pontos desejados
+        const a = -0.95238;
+        const b = 42.381;
+        const c = -374.286;
+        
+        preco = a * distanciaKm * distanciaKm + b * distanciaKm + c;
+    } else {
+        // Linear após 25km (preço por km adicional menor)
+        const precoAos25 = 90.0;
+        const taxaPorKmAdicional = 1.80;   // Ajuste este valor conforme necessário
+        
+        preco = precoAos25 + taxaPorKmAdicional * (distanciaKm - 25);
+    }
+
+    // Aplicar piso mínimo
+    preco = Math.max(preco, precoMinimo);
+    
+    // Multiplicador dinâmico (surge, chuva, horário de pico)
+    preco = preco * multiplicador;
+
+    //return Math.round(preco * 100) / 100;
+    return preco
 }
