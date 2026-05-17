@@ -66,6 +66,7 @@ if(!bcryptjs.compareSync(password,driver.password)){
     return res.status(200).json(ret);
 }
 
+/*
 export const setStatus =  async (req,res) => {
 
     const {driverId,online} = req.body;
@@ -79,6 +80,26 @@ export const setStatus =  async (req,res) => {
     }
 
 }
+
+*/
+export const setStatus =  async (req,res) => {
+
+    const {driverId,online} = req.body;
+
+    const driver = await Driver.findById(driverId);
+
+    if(!driver){
+        return res.status(404).json({message: "Driver não encontrado"});
+    }
+
+    driver.online = !driver.online;
+    const updatedDriver = await driver.save();
+
+    return res.status(200).json({online:updatedDriver.online,message:"Driver status updated"});
+  
+}
+
+
 
 
 /*
