@@ -505,7 +505,7 @@ export const updateLocation = async (req, res) => {
     driverId,
     { 
       position, 
-      online: true,
+     // online: true,
     },
     { new: true }
   );
