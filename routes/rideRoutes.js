@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as RideController from "../controllers/RideController.js";
+import * as RidePriceController from "../controllers/RidePriceController.js";
 import AuthPassenger from '../middleware/AuthPassenger.js';
 import AuthDriver from '../middleware/AuthDriver.js';
 
@@ -13,7 +14,7 @@ RideRouter.get("/rides/:id/status",AuthPassenger,RideController.status);
 RideRouter.post("/rides",AuthPassenger,RideController.store);
 
 
-RideRouter.post("/rides/price",AuthPassenger,RideController.price);
+RideRouter.post("/rides/price",AuthPassenger,RidePriceController.price);
 
 RideRouter.post("/rides/price-taxistas",AuthPassenger,RideController.priceTaxistas);
 RideRouter.post("/rides/:driverId",AuthPassenger,RideController.storeWithDriver);
