@@ -12,9 +12,9 @@ export const calcularPrecoAcima3KmAbaixo20km = (distanciaKm) => {
     const taxaFixa = 10.00; 
     let precoPorKm = 5.00; 
 
-    if(distanciaKm>6 && distanciaKm <= 6.6) precoPorKm = 4.00;
-    if(distanciaKm>7.9 && distanciaKm <= 8.4) precoPorKm = 2.40;
-    if(distanciaKm>13.8 && distanciaKm <= 14.2) precoPorKm = 2.14;
+    if(distanciaKm>6 && distanciaKm <= 6.6) precoPorKm = 4.00; // bs
+    if(distanciaKm>7.9 && distanciaKm <= 8.4) precoPorKm = 2.40;  //dias
+    if(distanciaKm>13.4 && distanciaKm <= 14.2) precoPorKm = 2.14;  // cv
 
     return (distanciaKm * precoPorKm) + taxaFixa;
 }

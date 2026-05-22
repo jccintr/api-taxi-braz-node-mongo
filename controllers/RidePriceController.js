@@ -14,15 +14,25 @@ export const price = async (req,res) => {
     let ridePrice = 0
 
     if (distancia <= 3) {
+        console.log('Calculando preço para distância até 3km');
         ridePrice = calcularPrecoAte3Km(distancia);
+        console.log('Preço calculado para distância até 3km:', ridePrice);
+    } else if (distancia > 3 && distancia < 20) {
+         console.log('Calculando preço para distância entre 3km e 20km');
+        ridePrice = calcularPrecoAcima3KmAbaixo20km(distancia);
+        console.log('Preço calculado para distância entre 3km e 20km:', ridePrice);
+    } else if (distancia >= 20) {
+        console.log('Calculando preço para distância acima de 20km');
+        ridePrice = calcularPrecoAcima20Km(distancia);
+        console.log('Preço calculado para distância acima de 20km:', ridePrice);
     }
 
     if (distancia > 3 && distancia < 20) {
-        ridePrice = calcularPrecoAcima3KmAbaixo20km(distancia);
+      
     }
     
      if (distancia >= 20) {
-        ridePrice = calcularPrecoAcima20Km(distancia);
+        
     }
 
     
@@ -32,13 +42,15 @@ export const price = async (req,res) => {
     const hora = parseInt(time.split(':')[0]);
 
     if(hora > 21 || hora < 6) {
+        console.log('Aplicando acréscimo noturno');
         ridePrice = ridePrice * 1.2;
         adicionalNoturno = true;
         valorAdicionalNoturno = ridePrice * 0.2;
     }
 
      ridePrice = Math.round(ridePrice,2);
-
+     const totalRidesFinished = 10;
+     /*
     // verifica se é a primeira corrida do passageiro, se for, aplica 20% de desconto
     const totalRidesFinished = await Ride.countDocuments({
         passenger: passengerId,
@@ -46,10 +58,11 @@ export const price = async (req,res) => {
     });
     
     if(totalRidesFinished == 0) {
+        console.log('Aplicando desconto para primeira corrida');
         ridePrice = ridePrice * 0.8;
         valorDescontoPrimeiraCorrida = ridePrice * 0.2;
     }
-
+*/
     const valorTotalCorrida = ridePrice + valorAdicionalNoturno - valorDescontoPrimeiraCorrida;
     const valorIntegralCorrida = ridePrice + valorAdicionalNoturno;
     ridePrice = Math.round(valorTotalCorrida,2);
@@ -64,6 +77,7 @@ export const price = async (req,res) => {
             valorDescontoPrimeiraCorrida: valorDescontoPrimeiraCorrida
     };
 
+    console.log('Preço da corrida calculado:', price);
     addLog(passengerId,'Consultou preço de uma corrida',distancia.toFixed(2) + 'km $'+parseFloat(ridePrice).toFixed(2));
     return res.status(200).json(price);
 }
