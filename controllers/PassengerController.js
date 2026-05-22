@@ -39,7 +39,7 @@ import { addLog } from '../util/logs.js';
         const ret = {
             ...rest,
             token,
-            firstRide: totalRidesFinished === 0  // true = tem direito ao desconto
+            firstRide: false // totalRidesFinished === 0  // true = tem direito ao desconto
         };
         addLog(passenger._id,'Login pela tela Login','');
         return res.status(200).json(ret);
@@ -108,7 +108,7 @@ import { addLog } from '../util/logs.js';
         });
          const ret = {
              ...passenger._doc,
-            firstRide: totalRidesFinished === 0  // true = tem direito ao desconto
+            firstRide: false //totalRidesFinished === 0  // true = tem direito ao desconto
         };
       addLog(passenger._id,'Login pela tela Preload','');
        return res.status(200).json(ret);
