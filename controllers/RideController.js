@@ -66,6 +66,7 @@ export const store = async (req,res) => {
 
 
     // Confirma no backend se tem direito ao desconto (nunca confie só no frontend)
+    /*
     const totalRidesFinished = await Ride.countDocuments({
         passenger: passengerId,
         status: 5
@@ -73,7 +74,7 @@ export const store = async (req,res) => {
     if(totalRidesFinished === 0) {
          newRide.events.push({data: new Date(),descricao: "20% de desconto aplicado - Primeira corrida do passageiro"});
     }
-
+    */
     newRide.events.push({data: new Date(),descricao: "Aguardando Motorista"});
     await newRide.save();
 
