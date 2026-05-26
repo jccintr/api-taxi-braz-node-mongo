@@ -36,8 +36,6 @@ if(!bcryptjs.compareSync(password,admin.password)){
     return res.status(200).json(ret);
 }
 
-
-
 export const store = async (req,res) => {
    
     const {name,email,password} = req.body;
@@ -351,8 +349,6 @@ async function sendPushNotificationToDriver(pushToken,title,body) {
     }
 }
 
-
-
 async function valorTotalCorridasPorDia() {
   // Define o início do dia atual (00:00:00) no fuso local (-03)
   const inicioDoDia = new Date();
@@ -449,6 +445,26 @@ async function valorTotalCorridasPorMes() {
  
   return total;
 }
+
+ export const deleteRide = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const deleted = await Ride.findByIdAndDelete(id);
+
+    // Se não encontrou a corrida
+    if (!deleted) {
+      return res.status(404).json({ error: 'Corrida não encontrada.' });
+    }
+
+    // Sucesso - sem conteúdo
+    return res.status(204).send();
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro interno no servidor.' });
+  }
+};
 
 
 

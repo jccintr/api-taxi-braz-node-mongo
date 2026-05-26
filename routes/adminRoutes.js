@@ -24,6 +24,7 @@ AdminRouter.delete("/admin/logs/passengers/:id",AuthAdmin,PassengerLogController
 
 AdminRouter.get("/admin/logs/drivers?",AuthAdmin,DriverLogController.index);
 AdminRouter.delete("/admin/logs/drivers/:id",AuthAdmin,DriverLogController.destroy);
+AdminRouter.delete("/admin/rides/:id",AuthAdmin,AdminController.deleteRide);
 
 
 AdminRouter.get("/admin/drivers",AuthAdmin,AdminController.drivers);
