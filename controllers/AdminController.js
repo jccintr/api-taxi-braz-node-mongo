@@ -222,7 +222,7 @@ export const getRideDetail  = async (req,res) => {
   
   const rideId = req.params.id;
 
-  const ride = await Ride.findById(rideId).populate('passenger','name avatar rating').populate('driver','name avatar rating').populate('pagamento','nome').select('data driver status origem destino distancia duracao valor valorPlataforma veiculo passengerRating driverRating events motivoCancelamento');
+  const ride = await Ride.findById(rideId).populate('passenger','name avatar rating').populate('driver','name avatar rating').populate('pagamento','nome').select('data driver status origem destino distancia duracao valor valorPlataforma veiculo passengerRating driverRating events motivoCancelamento messages');
       
 
   return res.status(200).json(ride);
