@@ -113,7 +113,7 @@ export const store = async (req,res) => {
 
   export const drivers = async (req,res) => {
 
-    const drivers = await Driver.find().select('name avatar rating pushToken').sort({name: 'asc'});
+    const drivers = await Driver.find().select('name avatar rating pushToken online').sort({name: 'asc'});
            
     return res.status(200).json(drivers);
 
