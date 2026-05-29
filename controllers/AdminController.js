@@ -466,6 +466,29 @@ async function valorTotalCorridasPorMes() {
   }
 };
 
+export const toggleDriverStatus =  async (req,res) => {
+
+  const driverId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(driverId)) {
+        return res.status(400).json({ 
+            message: "ID inválido. O driverId deve ser um MongoDB ObjectId válido." 
+        });
+    }
+
+  const driver = await Driver.findById(driverId);
+
+   if(!driver){
+        return res.status(404).json({message: "Driver não encontrado"});
+    }
+
+    driver.online = !driver.online;
+    const updatedDriver = await driver.save();
+
+    return res.status(200).json({online:updatedDriver.online,message:"Driver status updated"});
+
+}
+
 
 
   
