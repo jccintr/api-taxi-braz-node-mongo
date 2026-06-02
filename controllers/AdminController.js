@@ -489,6 +489,83 @@ export const toggleDriverStatus =  async (req,res) => {
 
 }
 
+export const monthlyRideReport = async (req, res) => {
+    try {
+        let { month, year } = req.query;
+
+        // Default: mês e ano atual
+        const now = new Date();
+        if (!month) month = now.getMonth() + 1; // 1-12
+        if (!year) year = now.getFullYear();
+
+        month = parseInt(month);
+        year = parseInt(year);
+
+        // Validação básica
+        if (month < 1 || month > 12 || year < 2000) {
+            return res.status(400).json({ error: 'Mês ou ano inválido.' });
+        }
+
+        // Período: início e fim do mês
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+        // === QUANTIDADES GERAIS ===
+        const completedCount = await Ride.countDocuments({
+            data: { $gte: startDate, $lte: endDate },
+            status: 5
+        });
+
+        const cancelledByDriverCount = await Ride.countDocuments({
+            data: { $gte: startDate, $lte: endDate },
+            status: -2
+        });
+
+        const cancelledByPassengerCount = await Ride.countDocuments({
+            data: { $gte: startDate, $lte: endDate },
+            status: -1
+        });
+
+        // === DADOS DAS CORRIDAS FINALIZADAS ===
+        const completedRides = await Ride.find({
+            data: { $gte: startDate, $lte: endDate },
+            status: 5
+        }).populate('driver', 'name');
+
+        const totalFaturado = completedRides.reduce((sum, ride) => sum + (ride.valor || 0), 0);
+
+        // Agrupar corridas por motorista
+        const driverStats = {};
+        completedRides.forEach(ride => {
+            if (ride.driver) {
+                const driverName = ride.driver.name || 'Motorista sem nome';
+                driverStats[driverName] = (driverStats[driverName] || 0) + 1;
+            }
+        });
+
+        // Converter para array ordenada por quantidade
+        const corridasPorMotorista = Object.entries(driverStats)
+            .sort((a, b) => b[1] - a[1])
+            .map(([name, count]) => ({ nome: name, quantidade: count }));
+
+        const motoristasUnicos = Object.keys(driverStats).length;
+
+        return res.status(200).json({
+            periodo: `${month.toString().padStart(2, '0')}/${year}`,
+            corridasFinalizadas: completedCount,
+            canceladasMotorista: cancelledByDriverCount,
+            canceladasPassageiro: cancelledByPassengerCount,
+            totalFaturado: totalFaturado,
+            motoristasUnicos: motoristasUnicos,
+            corridasPorMotorista: corridasPorMotorista
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Erro interno ao gerar relatório.' });
+    }
+};
+
 
 
   

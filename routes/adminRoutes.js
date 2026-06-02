@@ -38,6 +38,7 @@ AdminRouter.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver
 AdminRouter.get("/admin/rides?",AuthAdmin,AdminController.getAllRides);
 AdminRouter.get("/admin/rides/cancelled?",AuthAdmin,AdminController.getCancelledRides);
 AdminRouter.get("/admin/rides/solicited?",AuthAdmin,AdminController.getSolicitedRides);
+AdminRouter.get("/admin/rides/report", AuthAdmin, AdminController.monthlyRideReport);
 AdminRouter.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 AdminRouter.get("/admin/dashboard",AuthAdmin,AdminController.getDashboardData);
 
