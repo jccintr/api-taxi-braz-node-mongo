@@ -236,6 +236,7 @@ export const getDashboardData  = async (req,res) => {
   const driversOnline = await Driver.countDocuments({online:true});
   const solicitedRides = await Ride.countDocuments({status: -1});
   const cancelledRides = await Ride.countDocuments({status: -2});
+  const inProgressRides = await Ride.countDocuments({status: 4});
   const completedRides = await Ride.countDocuments({status: 5});
 
   
@@ -251,6 +252,7 @@ export const getDashboardData  = async (req,res) => {
     driversOnline,
     solicitedRides,
     cancelledRides,
+    inProgressRides,
     completedRides,
     completedRidesPerDayTotalValue,
     completedRidesPerWeekTotalValue,
