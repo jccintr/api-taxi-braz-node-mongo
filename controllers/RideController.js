@@ -299,6 +299,7 @@ export const passengerCancel = async (req,res) => {
     const ride = await Ride.findById(rideId);
     
     if(ride.status!==0){
+        addLog(passengerId,'Tentou cancelar uma corrida',`Status da Corrida: ${ride.status}`);
         return res.status(400).json({error:'Esta corrida não pode ser cancelada.'});
     }
 
