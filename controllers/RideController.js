@@ -117,7 +117,77 @@ export const store = async (req,res) => {
 }
 
 // chamada pelo driver ao aceitar a corrida
-export const accept = async (req,res) => {
+export const accept = async (req, res) => {
+    const rideId = req.params.id;
+    const { driverId } = req.body;
+
+    // Atualização atômica com condição
+    const updatedRide = await Ride.findOneAndUpdate(
+        { 
+            _id: rideId, 
+            status: 0   // Só aceita se ainda estiver disponível
+        },
+        {
+            $set: {
+                status: 1,
+                driver: driverId,
+                veiculo: null, // vamos buscar depois
+            },
+            $push: {
+                events: { data: new Date(), descricao: "Corrida aceita" }
+            }
+        },
+        { 
+            new: true,           // Retorna o documento atualizado
+            runValidators: true 
+        }
+    );
+
+    if (!updatedRide) {
+        return res.status(400).json({ 
+            error: 'Corrida não disponível no momento.' 
+        });
+    }
+
+    // Agora buscamos o driver e populamos tudo
+    const driver = await Driver.findById(driverId).select('veiculo name avatar rating telefone');
+    
+    if (driver) {
+        updatedRide.veiculo = driver.veiculo;
+        await updatedRide.save(); // só para atualizar o veículo
+    }
+
+    // Populate completo
+    const acceptedRide = await Ride.findById(rideId)
+        .populate('passenger', 'name avatar rating telefone')
+        .populate('driver', 'name avatar rating telefone')
+        .populate('pagamento', 'nome')
+        .select('status data distancia duracao valor origem destino events messages veiculo');
+
+    // WebSocket
+    const wss = req.app.get("wss");
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            if(client.id==ride.passenger._id){
+                client.send(JSON.stringify({origin:'ride',ride:acceptedRide}));
+            }
+        }
+      });
+     /* 
+    const wss = req.app.get("wss");
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN && client.id === acceptedRide.passenger._id.toString()) {
+            client.send(JSON.stringify({ origin: 'ride', ride: acceptedRide }));
+        }
+    });
+    */
+    addDriverLog(driverId, 'Aceitou uma corrida', 
+        `De: ${acceptedRide.origem.address} Para: ${acceptedRide.destino.address} Valor: R$ ${acceptedRide.valor.toFixed(2)}`);
+
+    return res.status(200).json(acceptedRide);
+};
+
+export const acceptAntigo = async (req,res) => {
 
     const rideId = req.params.id;
     const {driverId} = req.body;
