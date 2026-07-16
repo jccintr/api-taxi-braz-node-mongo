@@ -165,6 +165,7 @@ export const accept = async (req, res) => {
         .select('status data distancia duracao valor origem destino events messages veiculo');
 
     // WebSocket
+    /*
     const wss = req.app.get("wss");
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
@@ -173,14 +174,15 @@ export const accept = async (req, res) => {
             }
         }
       });
-     /* 
+      */
+      
     const wss = req.app.get("wss");
     wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN && client.id === acceptedRide.passenger._id.toString()) {
             client.send(JSON.stringify({ origin: 'ride', ride: acceptedRide }));
         }
     });
-    */
+    
     addDriverLog(driverId, 'Aceitou uma corrida', 
         `De: ${acceptedRide.origem.address} Para: ${acceptedRide.destino.address} Valor: R$ ${acceptedRide.valor.toFixed(2)}`);
 
