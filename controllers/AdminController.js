@@ -6,7 +6,7 @@ import Driver from '../models/driver.js';
 import Ride from '../models/ride.js';
 import PassengerLog from '../models/passengerLog.js';
 import mongoose from 'mongoose';
-import {AddDriverLog} from '../util/logs.js';
+import { addDriverLog } from '../util/logs.js';
 
 
 
