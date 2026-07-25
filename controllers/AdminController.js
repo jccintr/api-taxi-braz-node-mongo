@@ -6,6 +6,7 @@ import Driver from '../models/driver.js';
 import Ride from '../models/ride.js';
 import PassengerLog from '../models/passengerLog.js';
 import mongoose from 'mongoose';
+import {AddDriverLog} from '../util/logs.js';
 
 
 
@@ -486,7 +487,7 @@ export const toggleDriverStatus =  async (req,res) => {
 
     driver.online = !driver.online;
     const updatedDriver = await driver.save();
-
+    addDriverLog(driverId,'Teve seu Status alterado pelo operador',`O motorista agora está ${updatedDriver.online?'online':'offline'}`);
     return res.status(200).json({online:updatedDriver.online,message:"Driver status updated"});
 
 }

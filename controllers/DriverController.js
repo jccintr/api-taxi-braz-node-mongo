@@ -94,7 +94,7 @@ export const setStatus =  async (req,res) => {
 
     driver.online = !driver.online;
     const updatedDriver = await driver.save();
-    addDriverLog(driver._id,'Alterou seu Status',`O motorista agora está ${driver.online?'online':'offline'}`);
+    addDriverLog(driver._id,'Alterou seu Status',`O motorista agora está ${updatedDriver.online?'online':'offline'}`);
     return res.status(200).json({online:updatedDriver.online,message:"Driver status updated"});
   
 }
