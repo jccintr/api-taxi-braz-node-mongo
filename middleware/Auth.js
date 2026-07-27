@@ -1,3 +1,8 @@
+// desconsiderar este arquivo
+
+/*
+
+
 import jsonwebtoken from 'jsonwebtoken';
 
 
@@ -26,3 +31,5 @@ import jsonwebtoken from 'jsonwebtoken';
 };
 
 export default AuthDriver;
+
+*/
