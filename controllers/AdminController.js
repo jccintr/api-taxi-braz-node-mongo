@@ -230,6 +230,40 @@ export const getRideDetail  = async (req,res) => {
 
 }
 
+export const getRidesByPassenger  = async (req,res) => {
+  const passengerId = req.params.id;
+  const passenger = await Passenger.findById(passengerId).select('name email telefone createdAt');
+
+  if(!passenger) {
+    return res.status(404).json({error:'Passageiro não encontrado.'});
+  }
+
+  const rides = await Ride.find({passenger:passengerId}).select('data status origem destino valor').sort({data: 'desc'});
+  
+  const response = {
+    passenger: passenger,
+    rides: rides
+  };
+  return res.status(200).json(response);
+}
+
+export const getRidesByDriver  = async (req,res) => {
+  const driverId = req.params.id;
+  const driver = await Driver.findById(driverId).select('name email telefone createdAt');
+
+  if(!driver) {
+    return res.status(404).json({error:'Motorista não encontrado.'});
+  }
+
+  const rides = await Ride.find({driver:driverId}).select('data status origem destino valor').sort({data: 'desc'});
+  
+  const response = {
+    driver: driver,
+    rides: rides
+  };
+  return res.status(200).json(response);
+}
+
 export const getDashboardData  = async (req,res) => {
 
   const registeredPassengers = await Passenger.countDocuments();

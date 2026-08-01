@@ -18,6 +18,8 @@ import jsonwebtoken from 'jsonwebtoken';
       return res.status(401).json({error:"Não autorizado"});
       }
     req.body.passengerId = decoded.passengerId;
+    // trocar no futuro
+    //req.user = { id: decoded.passengerId };
 
     next();
 

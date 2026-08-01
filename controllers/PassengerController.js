@@ -89,6 +89,8 @@ import { addLog } from '../util/logs.js';
     export const validateToken  = async (req,res) => {
 
         const {passengerId} = req.body;
+        // trocar no futuro
+        //const passengerId = req.user.id;
        
     
        const passenger = await Passenger.findById(passengerId).select('name email telefone avatar doc ativo emailVerifiedAt');

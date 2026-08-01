@@ -85,6 +85,8 @@ export const setStatus =  async (req,res) => {
 export const setStatus =  async (req,res) => {
 
     const {driverId,online} = req.body;
+    // trocar no futuro
+    //const driverId = req.user.id;
 
     const driver = await Driver.findById(driverId);
 

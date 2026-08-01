@@ -29,7 +29,9 @@ AdminRouter.delete("/admin/rides/:id",AuthAdmin,AdminController.deleteRide);
 
 AdminRouter.get("/admin/drivers",AuthAdmin,AdminController.drivers);
 AdminRouter.get("/admin/drivers/:id",AuthAdmin,AdminController.showDriver);
+AdminRouter.get("/admin/drivers/:id/rides",AuthAdmin,AdminController.getRidesByDriver);
 AdminRouter.get("/admin/passengers/:id",AuthAdmin,AdminController.showPassenger);
+AdminRouter.get("/admin/passengers/:id/rides",AuthAdmin,AdminController.getRidesByPassenger);
 //AdminRouter.get("/admin/passengers/:id/rides",AuthAdmin,AdminController.showPassengerRides);
 AdminRouter.put("/admin/drivers/:id",AuthAdmin,AdminController.updateDriver);
 AdminRouter.post("/admin/drivers/:id/status",AuthAdmin,AdminController.toggleDriverStatus);
