@@ -232,13 +232,13 @@ export const getRideDetail  = async (req,res) => {
 
 export const getRidesByPassenger  = async (req,res) => {
   const passengerId = req.params.id;
-  const passenger = await Passenger.findById(passengerId).select('name email telefone createdAt');
+  const passenger = await Passenger.findById(passengerId).select('name email telefone createdAt avatar');
 
   if(!passenger) {
     return res.status(404).json({error:'Passageiro não encontrado.'});
   }
 
-  const rides = await Ride.find({passenger:passengerId}).select('data status origem destino valor').sort({data: 'desc'});
+  const rides = await Ride.find({passenger:passengerId}).select('data status origem destino driver valor').populate('driver','name avatar').sort({data: 'desc'});
   
   const response = {
     passenger: passenger,
@@ -249,13 +249,13 @@ export const getRidesByPassenger  = async (req,res) => {
 
 export const getRidesByDriver  = async (req,res) => {
   const driverId = req.params.id;
-  const driver = await Driver.findById(driverId).select('name email telefone createdAt');
+  const driver = await Driver.findById(driverId).select('name email telefone createdAt avatar');
 
   if(!driver) {
     return res.status(404).json({error:'Motorista não encontrado.'});
   }
 
-  const rides = await Ride.find({driver:driverId}).select('data status origem destino valor').sort({data: 'desc'});
+  const rides = await Ride.find({driver:driverId}).select('data status origem destino passenger valor').populate('passenger','name avatar').sort({data: 'desc'});
   
   const response = {
     driver: driver,
