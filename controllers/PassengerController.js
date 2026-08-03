@@ -169,6 +169,7 @@ import { addLog } from '../util/logs.js';
 
             passenger.emailVerifiedAt = new Date();
             await passenger.save();
+            addLog(passenger._id,'Ativou a sua conta','');
             return res.status(200).json(passenger);
 
         } else {
