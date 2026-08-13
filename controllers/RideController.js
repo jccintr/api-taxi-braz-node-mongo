@@ -81,14 +81,18 @@ export const store = async (req,res) => {
     const passenger = await Passenger.findById(passengerId).select('name'); 
 
 
-    const drivers = await Driver.find({online:true}).select('pushToken');
+    const drivers = await Driver.find({online:true}).select('pushToken name');
     const toDrivers = [];
+    const toDriversName = [];
     drivers.forEach((driver)=>{
         if(driver.pushToken){
             toDrivers.push(driver.pushToken);
+            toDriversName.push(driver.name);
         }
     });
-    console.log('toDrivers =>',toDrivers);
+    
+    const stringDriversName = toDriversName.join(", ");
+    console.log('Notificando os motoristas =>',stringDriversName);
     
     // envia a notificação para o motorista
     const sound = 'default';
@@ -109,6 +113,7 @@ export const store = async (req,res) => {
     }
 
     addLog(passengerId,'Solicitou uma corrida',`De: ${origem.address} Para: ${destino.address} Valor: R$ ${valor.toFixed(2)}`);
+    addLog(passengerId,'Motoristas notificados',stringDriversName);
     
     const retRide = await Ride.findById(newRide._id).populate('pagamento','nome').select('status data distancia duracao valor origem destino events messages');
     
