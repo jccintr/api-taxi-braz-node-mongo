@@ -4,7 +4,7 @@ import Admin from '../models/admin.js';
 import Passenger from '../models/passenger.js';
 import Driver from '../models/driver.js';
 import Ride from '../models/ride.js';
-import PassengerLog from '../models/passengerLog.js';
+//import PassengerLog from '../models/passengerLog.js';
 import mongoose from 'mongoose';
 import { addDriverLog } from '../util/logs.js';
 
@@ -170,7 +170,7 @@ export const showPassenger = async (req,res) => {
    return res.status(200).json({mensagem:'Passageiro alterado com sucesso.'});
 }
 
-export const getAllRides  = async (req,res) => {
+export const getAllRides  = async (req,res) => { // cncluidas
    const page = req.query.page * 1 || 1;
    const pageSize = 10;
    const skip = ( page - 1 ) * pageSize;
@@ -186,7 +186,57 @@ export const getAllRides  = async (req,res) => {
   });
 
 }
+export const getPendingRides  = async (req,res) => {
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await Ride.countDocuments({status: 0});
+   const pages = Math.ceil(totalDocuments / pageSize);
 
+  const pendingRides = await Ride.find({status: 0}).populate('passenger','name avatar').select('data passenger driver valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+  
+  return res.status(200).json({
+    pages: pages,
+    data: pendingRides
+  });
+
+}
+
+export const getIAcceptedRides  = async (req,res) => { // cncluidas
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await Ride.countDocuments({
+         status: { $gte: 1, $lte: 3 },
+  });
+  const pages = Math.ceil(totalDocuments / pageSize);
+
+
+  const rides = await Ride.find({status: { $gte: 1, $lte: 3 }}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+    
+  return res.status(200).json({
+    pages: pages,
+    data: rides
+  });
+
+}
+
+export const getInProgressRides  = async (req,res) => { // cncluidas
+   const page = req.query.page * 1 || 1;
+   const pageSize = 10;
+   const skip = ( page - 1 ) * pageSize;
+   const totalDocuments = await Ride.countDocuments({status: 4});
+   const pages = Math.ceil(totalDocuments / pageSize);
+
+
+  const rides = await Ride.find({status: 4}).populate('passenger','name avatar').populate('driver','name avatar').select('data passenger driver status valor').sort({data: 'desc'}).skip(skip).limit(pageSize);
+    
+  return res.status(200).json({
+    pages: pages,
+    data: rides
+  });
+
+}
 export const getCancelledRides  = async (req,res) => {
    const page = req.query.page * 1 || 1;
    const pageSize = 10;

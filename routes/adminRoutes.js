@@ -39,6 +39,9 @@ AdminRouter.put("/admin/passengers/:id",AuthAdmin,AdminController.updatePassenge
 AdminRouter.post("/admin/drivers/register",AuthAdmin,AdminController.storeDriver);
 AdminRouter.get("/admin/rides?",AuthAdmin,AdminController.getAllRides);
 AdminRouter.get("/admin/rides/cancelled?",AuthAdmin,AdminController.getCancelledRides);
+AdminRouter.get("/admin/rides/pending?",AuthAdmin,AdminController.getPendingRides);
+AdminRouter.get("/admin/rides/in-progress?",AuthAdmin,AdminController.getInProgressRides);
+AdminRouter.get("/admin/rides/accepted?",AuthAdmin,AdminController.getIAcceptedRides);
 AdminRouter.get("/admin/rides/solicited?",AuthAdmin,AdminController.getSolicitedRides);
 AdminRouter.get("/admin/rides/report", AuthAdmin, AdminController.monthlyRideReport);
 AdminRouter.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
