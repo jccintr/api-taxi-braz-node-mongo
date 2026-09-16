@@ -46,6 +46,7 @@ AdminRouter.get("/admin/rides/solicited?",AuthAdmin,AdminController.getSolicited
 AdminRouter.get("/admin/rides/report", AuthAdmin, AdminController.monthlyRideReport);
 AdminRouter.get("/admin/rides/:id",AuthAdmin,AdminController.getRideDetail);
 AdminRouter.get("/admin/dashboard",AuthAdmin,AdminController.getDashboardData);
+AdminRouter.get("/admin/map",AuthAdmin,AdminController.getMapData);
 
 
 AdminRouter.post("/admin/drivers/sendPushMessage",AuthAdmin,AdminController.sendPushMessage);

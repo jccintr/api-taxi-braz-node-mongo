@@ -653,6 +653,23 @@ export const monthlyRideReport = async (req, res) => {
     }
 };
 
+export const getMapData =  async (req,res) => {
+
+    const drivers = await Driver.find({online:true}).select('name veiculo position').sort({ name: 1 });;
+    const pendingRides = await Ride.find({status: 0}).select('data passenger origem').populate('passenger','name avatar');
+    const acceptedRides = await Ride.find({status: { $gte: 1, $lte: 3 }}).select('data passenger driver origem').populate('passenger','name avatar').populate('driver','name');
+  
+  
+  return res.status(200).json({
+    drivers: drivers,
+    pendingRides: pendingRides,
+    acceptedRides: acceptedRides
+  });
+
+ 
+
+}
+
 
 
   
