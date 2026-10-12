@@ -105,6 +105,7 @@ export const store = async (req,res) => {
             Accept: 'application/json',
             'Content-Type': 'application/json'
         },
+        priority: "high",
         body: JSON.stringify({to:toDrivers,sound,title,body})
     });
 
